@@ -74,6 +74,7 @@ INSTALLED_APPS = [
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -86,13 +87,6 @@ MIDDLEWARE = [
     # "allauth_2fa.middleware.AllauthTwoFactorMiddleware",
     "allauth.account.middleware.AccountMiddleware"
 ]
-MIDDLEWARE.insert(0, 'corsheaders.middleware.CorsMiddleware')
-
-# CORS_ALLOWED_ORIGINS = [
-#     "http://localhost:5173",
-#     "http://127.0.0.1:5173",
-#     "http://82c2-39-35-141-7.ngrok-free.app",  # Add ngrok URL if used
-# ]
 
 
 CORS_ALLOWED_ORIGINS = [
@@ -101,6 +95,8 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "https://avenzasurprises.com",
     "https://www.avenzasurprises.com", 
+    "https://api.avenzasurprises.com",
+
 ]
 
 
