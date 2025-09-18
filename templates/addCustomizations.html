@@ -37,53 +37,102 @@
             border-color: #f0d28c;  /* Border color on hover */
         }
 
-        .form-label {
-            font-size: 1.2rem;
-            font-weight: 600;
-        }
-
-        .form-control {
-            height: 50px;
-            font-size: 1rem;
-        }
-
         textarea.form-control {
             height: 150px;
             resize: none;
         }
+
+
+          body {
+            background-color: #f0d28c;
+            padding-bottom: 20px;
+        }
+
+        .form-container {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-heading {
+            text-align: left;
+            margin-bottom: 20px;
+            font-weight: bold;
+            font-size: 2rem;
+            color: #291a4a;
+        }
+
+        .description-box {
+            height: 150px;
+            resize: none;
+        }
+
+        .image-preview {
+            max-height: 100px;
+            margin-top: 10px;
+        }
+
+        .btn-primary {
+            background-color: #291a4a;
+            border-color: #291a4a;
+        }
+
+        .custom-button {
+            width: 150px;
+        }
+
+
+
     </style>
 {% endblock extra_css %}
 
 {% block content %}
-<div class="customization-container">
-    <h4 class="text-left mb-4">Add Customization</h4>
-    <form action="/api/packages/add-customize/" method="POST" enctype="multipart/form-data">
-      {% csrf_token %}
-      <!-- Title -->
-      <div class="mb-3">
-        <label for="title" class="form-label">Title</label>
-        <input type="text" class="form-control" id="title" name="title" placeholder="Enter title" required />
-      </div>
-      <!-- Price -->
-      <div class="mb-3">
-        <label for="price" class="form-label">Price</label>
-        <input type="number" class="form-control" id="price" name="price" placeholder="Enter price" step="0.01" required />
-      </div>
-      <!-- Image -->
-      <div class="mb-3">
-        <label for="image" class="form-label">Image</label>
-        <input type="file" class="form-control" id="image" name="image" accept="image/*" required />
-      </div>
-      <!-- Short Description -->
-      <div class="mb-3">
-        <label for="description" class="form-label">Short Description</label>
-        <textarea class="form-control" id="description" name="description" placeholder="Enter a short description" required></textarea>
-      </div>
-      <!-- Save Button -->
-      <div class="text-center">
-        <button type="submit" class="btn btn-primary custom-button">Submit</button>
+<div class="main-content">
+        <div class="page-content">
+            <div class="container-fluid">
+                <!-- start page title -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                            <h4 class="mb-sm-0 font-size-18">Add Customization</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="container">
+                    <div class="form-container">
+                        <form action="/api/packages/add-customize/" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <!-- Title -->
+                        <div class="mb-4">
+                            <label for="title" class="form-label">Title</label>
+                            <input type="text" class="form-control" id="title" name="title" placeholder="Enter title" required />
+                        </div>
+                        <!-- Price -->
+                        <div class="mb-4">
+                            <label for="price" class="form-label">Price</label>
+                            <input type="number" class="form-control" id="price" name="price" placeholder="Enter price" step="0.01" required />
+                        </div>
+                        <!-- Image -->
+                        <div class="mb-4">
+                            <label for="image" class="form-label">Image</label>
+                            <input type="file" class="form-control" id="image" name="image" accept="image/*" required />
+                        </div>
+                        <!-- Short Description -->
+                        <div class="mb-4">
+                            <label for="description" class="form-label">Short Description</label>
+                            <textarea class="form-control" id="description" name="description" placeholder="Enter a short description" required></textarea>
+                        </div>
+                        <!-- Save Button -->
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary custom-button">Submit</button>
+                        </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    </form>
 </div>
 {% endblock content %}
 
