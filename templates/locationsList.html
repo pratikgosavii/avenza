@@ -1,0 +1,240 @@
+{% extends "partials/adminBase.html" %}
+{% load static %}
+
+{% block title %}Customers List{% endblock title %}
+
+
+{% block extra_css %}
+
+    <!-- Bootstrap CSS -->
+  
+    <style>
+      body {
+        background-color: #f8f9fa;
+      }
+      .table-container {
+        margin-top: 40px;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        background-color: #fff;
+      }
+     
+      .table td img {
+        width: 70px;
+        height: 70px;
+      }
+      .btn-primary {
+        background-color: #291a4a;
+        width: auto;
+      }
+      .btn-primary:hover {
+        background-color: #f0d28c;
+      }
+      .action-icons {
+        font-size: 1.3rem;
+        cursor: pointer;
+      }
+      .action-icons .edit {
+        color: #0d6efd;
+        margin-right: 10px;
+      }
+      .action-icons .delete {
+        color: #dc3545;
+      }
+    </style>
+
+
+    <style>
+      body {
+          background-color: gainsboro;
+          color: #291a4a;
+      }
+
+      .card {
+          background-color: #ffffff;
+          border: none;
+          border-radius: 8px;
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .card-header {
+          background-color: #291a4a;
+          color: #ffffff;
+          border-radius: 8px 8px 0 0;
+          padding: 20px;
+      }
+
+      .card-title {
+          margin: 0;
+      }
+
+      .card-body {
+          padding: 20px;
+      }
+
+     
+      .status-approved {
+          color: rgb(80, 244, 80);
+          font-weight: bold;
+      }
+
+      .status-pending {
+          color: blue;
+          font-weight: bold;
+      }
+
+      .status-not-approved {
+          color: red;
+          font-weight: bold;
+      }
+
+      @media (max-width: 768px) {
+          .table-responsive {
+              overflow-x: auto;
+          }
+      }
+  </style>
+
+    {% endblock extra_css %}
+
+
+    
+{% block content %}
+
+<div class="main-content">
+  <div class="page-content">
+      <div class="container-fluid">
+          <!-- start page title -->
+          <div class="row">
+              <div class="col-12">
+                  <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                      <h4 class="mb-sm-0 font-size-18">Customer List</h4>
+                  </div>
+              </div>
+          </div>
+          <div class="container">
+              <div class="row">
+                  <div class="col-12">
+                      <div class="card">
+                          <div class="card-body">
+                              <div class="table-responsive">
+                                  <table id="datatable" class="table table-bordered table-striped">
+                                      <thead>
+                                      <tr>
+                                          <th>#</th>
+                                          <th>Title</th>
+                                          <th>Image</th>
+                                          <th>Description</th>
+                                          <th>Action</th>
+                                      </tr>
+                                      </thead>
+                                      <tbody id="tableBody">
+                                        {% for location in locations %}
+                                        <tr>
+                                          <td>{{ forloop.counter }}</td>
+                                          <td>{{ location.title }}</td>
+                                          <td>{{ location.description }}</td>
+                                          <td>
+                                            <img
+                                              src="{{ location.image }}"
+                                              alt="Location Icon"
+                                              class="img-fluid"
+                                            />
+                                          </td>
+                                             
+                                              <td>
+
+                                                <span style="display: flex;">
+                                                  
+                                                  <!-- Edit Button: This will lead to the customer edit form -->
+
+                                                  <a href="{% url 'updateLocationDetail' location.id %}"  ><i class="bi bi-pencil-square text-primary action-icons edit"  title="Edit"></i>  </a>
+
+
+                                                  <form action="{% url 'deleteLocation' location.id %}"  method="post" class="reject-form">
+                                                    {% csrf_token %}
+                                                    
+                                                    <button type="submit" style="background: none; border: none;" class="bi bi-trash text-danger action-icons delete" title="Delete"></i> </button>
+                                                </form>
+
+                                              </span>
+                                              
+                                              </td>
+                                          </tr>
+                                      {% endfor %}
+                                      </tbody>
+                                  </table>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+      <!-- container-fluid -->
+  </div>
+  <!-- End Page-content -->
+
+{% endblock content %}
+
+
+
+{% block extra_js %}
+
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      // Function to delete row
+      function deleteRow(element) {
+        if (confirm("Are you sure you want to delete this row?")) {
+          const row = element.closest("tr");
+          row.remove();
+        }
+      }
+
+      // Function to open Edit Modal and populate data
+      function editRow(element) {
+        const row = element.closest("tr");
+        const locationName = row.cells[0].innerText;
+        const rowIndex = row.rowIndex;
+
+        document.getElementById("editLocationName").value = locationName;
+        document.getElementById("rowIndex").value = rowIndex;
+
+        const editModal = new bootstrap.Modal(
+          document.getElementById("editModal")
+        );
+        editModal.show();
+      }
+
+      // Function to save edited data
+      function saveEdit() {
+        const rowIndex = document.getElementById("rowIndex").value;
+        const locationName = document.getElementById("editLocationName").value;
+        const table = document.getElementById("locationTable");
+        const row = table.rows[rowIndex - 1];
+
+        row.cells[0].innerText = locationName;
+
+        // Update icon if a new file is selected
+        const imageInput = document.getElementById("editLocationImage");
+        if (imageInput.files.length > 0) {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            row.cells[1].querySelector("img").src = e.target.result;
+          };
+          reader.readAsDataURL(imageInput.files[0]);
+        }
+
+        const editModal = bootstrap.Modal.getInstance(
+          document.getElementById("editModal")
+        );
+        editModal.hide();
+      }
+    </script>
+  
+
+{% endblock extra_js %}
+>>>>>>> e6a49c7eb4915906edc9ef26058a823109835281

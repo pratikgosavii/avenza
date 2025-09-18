@@ -1,0 +1,95 @@
+{% load static %}
+{% block content %}
+
+    <!-- ============================================================== -->
+    <!-- Start right Content here -->
+    <!-- ============================================================== -->
+    <div class="main-content">
+        <div class="page-content">
+            <div class="container-fluid">
+                <!-- start page title -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                            <h4 class="mb-sm-0 font-size-18">{{ title }}</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table
+                                                id="datatable"
+                                                class="table table-bordered table-striped"
+                                        >
+                                            <thead>
+                                            <tr>
+                                                <th>Id</th>
+                                                <th>Title</th>
+                                                <th>Location</th>
+                                                <th>Categories</th>
+                                                <th>Packages</th>
+                                                <th>Image</th>
+                                                <th>Description</th>
+                                                <th>Action</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody id="tableBody">
+                                                {% for homeSection in data %}
+                                                <tr>
+                                                    <td>{{ homeSection.id }}</td>
+                                                    <td>{{ homeSection.title }}</td>
+                                                    <td>{% for location in homeSection.locationDetails %}
+                                                        <li>{{ location.title }}</li>
+                                                        {% endfor %}
+                                                    </td>
+                                                        
+                                                    <td>{% for location in homeSection.categoriesDetail %}
+                                                        <li>{{ location.title }}</li>
+                                                        {% endfor %} 
+                                                    </td>
+
+                                                    <td>{% for location in homeSection.packagesDetail %}
+                                                        <li>{{ location.title }}</li>
+                                                        {% endfor %} 
+                                                    </td>
+
+                                                        <td>
+                                                            <img src="{{ homeSection.image }}" alt="HomeSection Image"
+                                                                 style="max-width: 100px; max-height: 100px; object-fit: cover;">
+                                                        </td>
+                                                        <td>{{ homeSection.description }}</td>
+                                                                           </td>
+                                                    <td>
+                                                        <!-- remove Button -->
+                                                      
+                                                      
+                                                        <a href="{% url 'updateHomeSectionDetail' homeSection.id %}"><i class="bi bi-pencil-square text-primary action-icons edit" title="Edit"></i>  </a>
+                                                        <a href="{% url 'deleteHomeSection' homeSection.id %}"> <i class="bi bi-trash text-danger action-icons delete" title="Delete"></i> </a>
+
+
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- container-fluid -->
+        </div>
+        <!-- End Page-content -->
+
+        {% block footer %}
+            {% include 'partials/footer.html' %}
+        {% endblock footer %}
+    </div>
+    <!-- end main content-->
+{% endblock content %}

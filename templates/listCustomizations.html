@@ -1,0 +1,160 @@
+{% extends "partials/adminBase.html" %}
+{% load static %}
+
+{% block title %}Create Package{% endblock title %}
+
+{% block extra_css %}
+    <!-- Plugin CSS -->
+    <link href="{% static 'libs/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <style>
+        body {
+            background-color: #f0d28c;
+            padding-bottom: 20px;
+        }
+
+        .customization-list-container {
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            margin-top: 40px; /* Adjust this value for more spacing */
+        }
+
+        h4 {
+            color: #291a4a;
+            margin-top: 40px; /* Increase top margin for more spacing */
+        }
+
+        .table th {
+            text-align: center;
+            font-weight: bold;
+            background-color: #f0d28c;
+            vertical-align: middle;
+        }
+
+        .table td {
+            vertical-align: middle;
+            text-align: center;
+        }
+
+        .action-icons {
+            font-size: 1.2rem;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        .action-icons.edit:hover {
+            color: #007bff;
+        }
+
+        .action-icons.delete:hover {
+            color: #dc3545;
+        }
+    </style>
+{% endblock extra_css %}
+
+{% block content %}
+
+
+<div class="main-content">
+    <div class="page-content">
+        <div class="container-fluid">
+
+<div class="container">
+    <h4 class="mb-4 text-left">Customization List</h4>
+    <div class="customization-list-container">
+        <table class="table table-bordered">
+            <thead class="table-light">
+                <tr>
+                    <th>#</th>
+                    <th>Title</th>
+                    <th>Price</th>
+                    <th>Image</th>
+                    <th>Description</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="customizationTableBody">
+              {% for item in customize %}
+              <tr>
+
+                    <td>{{ forloop.counter}}</td>
+                  <td>{{ item.title }}</td>
+                  <td>Rs {{ item.price }}</td>
+                  <td>
+                      <img src="{{ item.image }}" alt="Image" class="img-thumbnail" width="50"/>
+                  </td>
+                  <td class="editable" data-field="description">{{ item.description }}</td>
+                  <td>
+                      <a href="{% url 'update_customize' item.id %}" ><i class="bi bi-pencil-square text-primary action-icons edit"  title="Edit"></i>  </a>
+                      <a href="{% url 'delete_customize' item.id %}" > <i class="bi bi-trash text-danger action-icons delete" title="Delete"></i> </a>
+                  </td>
+              </tr>
+              {% endfor %}
+          </tbody>
+        </table>
+    </div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Bootstrap Icons -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet"/>
+{% endblock content %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+// Function to enable editing
+function editRow(icon) {
+    const row = icon.closest("tr");
+    const editableFields = row.querySelectorAll(".editable");
+
+    editableFields.forEach((field) => {
+        const currentValue = field.textContent.trim();
+        const input = document.createElement("input");
+        input.type = "text";
+        input.value = currentValue;
+        input.className = "form-control";
+        field.innerHTML = "";
+        field.appendChild(input);
+    });
+
+    // Change Edit icon to Save
+    icon.classList.remove("bi-pencil-square");
+    icon.classList.add("bi-check-lg");
+    icon.classList.remove("text-primary");
+    icon.classList.add("text-success");
+    icon.title = "Save";
+    icon.setAttribute("onclick", "saveRow(this)");
+}
+
+// Function to save the row after editing
+function saveRow(icon) {
+    const row = icon.closest("tr");
+    const editableFields = row.querySelectorAll(".editable");
+
+    editableFields.forEach((field) => {
+        const input = field.querySelector("input");
+        const newValue = input.value.trim();
+        field.textContent = newValue;
+    });
+
+    // Change Save icon back to Edit
+    icon.classList.remove("bi-check-lg");
+    icon.classList.add("bi-pencil-square");
+    icon.classList.remove("text-success");
+    icon.classList.add("text-primary");
+    icon.title = "Edit";
+    icon.setAttribute("onclick", "editRow(this)");
+}
+
+// Function to delete a row
+function deleteRow(icon) {
+    const row = icon.closest("tr");
+    row.remove();
+}
+</script>
+{% endblock extra_js %}

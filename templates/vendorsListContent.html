@@ -1,0 +1,69 @@
+{% load static %}
+{% block content %}
+
+<div class="main-content">
+    <div class="page-content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                        <h4 class="mb-sm-0 font-size-18">Vendor Requests</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table id="datatable" class="table table-bordered table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Username</th>
+                                                <th>Email</th>
+                                                <th>Vendor Name</th>
+                                                <th>Phone Number</th>
+                                                <th>Location</th>
+                                                <th>Approved</th>
+                                                <th>Pending</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for vendor in vendors %}
+                                                <tr>
+                                                    <td>{{ vendor.user.username }}</td>
+                                                    <td>{{ vendor.user.email }}</td>
+                                                    <td>{{ vendor.vendorname }}</td>
+                                                    <td>{{ vendor.vendorPhoneNumber }}</td>
+                                                    <td>{{ vendor.location.name }}</td>
+                                                    <td>{{ vendor.is_approved|yesno:"Yes,No" }}</td>
+                                                    <td>{{ vendor.is_pending|yesno:"Yes,No" }}</td>
+                                                    <td>
+                                                        <form action="{% url 'vendorApproval' vendor.id %}" method="post" style="display: inline;">
+                                                            {% csrf_token %}
+                                                            <input type="hidden" name="action" value="approve">
+                                                            <button type="submit" class="btn btn-success btn-sm">Accept</button>
+                                                        </form>
+                                                        <form action="{% url 'vendorApproval' vendor.id %}" method="post" style="display: inline;">
+                                                            {% csrf_token %}
+                                                            <input type="hidden" name="action" value="reject">
+                                                            <button type="submit" class="btn btn-danger btn-sm">Reject</button>
+                                                        </form>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

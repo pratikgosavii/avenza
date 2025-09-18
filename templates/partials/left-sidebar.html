@@ -1,0 +1,419 @@
+{% load static %}
+{% block left_sidebar %}
+        <!-- ========== Left Sidebar Start ========== -->
+        <div class="vertical-menu">
+            <div data-simplebar class="h-100">
+
+                <!--- Sidemenu -->
+                <div id="sidebar-menu">
+                    <!-- Left Menu Start -->
+                    <ul class="metismenu list-unstyled" id="side-menu">
+
+
+                        <li>
+                            <a href="{% url 'adminDashboard' %}">
+                                <i data-feather="home"></i>
+                                <span class="badge rounded-pill text-success float-end">9+</span>
+                                <span data-key="t-dashboard">Admin Dashboard</span>
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="javascript: void(0);" class="has-arrow">
+                                <i data-feather="layers"></i>
+                                <span data-key="t-authentication">Locations</span>
+                            </a>
+                            <ul class="sub-menu" aria-expanded="false">
+                                <li><a href="/api/locations/create/">Add Location</a></li>
+                               <li><a href="/api/locations/get/">Locations List</a></li>
+
+                            </ul>
+                        </li>
+
+                        <li>
+                            <a href="javascript: void(0);" class="has-arrow">
+                                <i data-feather="layers"></i>
+                                <span data-key="t-authentication">Menu</span>
+                            </a>
+                            <ul class="sub-menu" aria-expanded="false">
+                                <li><a>Navbar Menu</a></li>
+                                <li><a>Sub Menu</a></li>
+                            </ul>
+                        </li>
+
+                       
+                        <li>
+                            <li>
+                                <a href="javascript: void(0);" class="has-arrow">
+                                    <i data-feather="layers"></i>
+                                    <span data-key="t-authentication">Categories</span>
+                                </a>
+                                <ul class="sub-menu" aria-expanded="false">
+                                    <li><a href="/api/categories/create/">Add Category</a></li>
+                                    <li><a href="/api/categories/get/">Categories List</a></li>
+                                </ul>
+                            </li>
+                        <li>
+
+                        <li>
+                            <a href="javascript: void(0);" class="has-arrow">
+                                <i data-feather="layers"></i>
+                                <span data-key="t-authentication">Customizations</span>
+                            </a>
+                            <ul class="sub-menu" aria-expanded="false">
+                                <li><a href="/api/packages/add-customize/">Add Customizations</a></li>
+                                <li><a href="/api/packages/get-customize/">Customizations List</a></li>
+                            </ul>
+                        </li>
+
+                        <li>
+                            <a href="javascript: void(0);" class="has-arrow">
+                                <i data-feather="layers"></i>
+                                <span data-key="t-authentication">Package Inclusion</span>
+                            </a>
+                            <ul class="sub-menu" aria-expanded="false">
+                                <li><a href="/api/packages/add-package-inclusion/">Add Package Inclusion</a></li>
+                                <li><a href="/api/packages/list-package-inclusion/">Package Inclusion List</a></li>
+                            </ul>
+                        </li>
+
+                        <li>
+                            <a href="javascript: void(0);" class="has-arrow">
+                                <i data-feather="layers"></i>
+                                <span data-key="t-authentication">Package Need To Know</span>
+                            </a>
+                            <ul class="sub-menu" aria-expanded="false">
+                                <li><a href="/api/packages/add-need-to-know/">Add Package Need To Know</a></li>
+                                <li><a href="/api/packages/list-need-to-know/">Package Need To Know List</a></li>
+                            </ul>
+                        </li>
+
+                        <li>
+                        
+                            <a href="javascript: void(0);" class="has-arrow">
+                                <i data-feather="layers"></i>
+                                <span data-key="t-authentication">Packages</span>
+                            </a>
+                            <ul class="sub-menu" aria-expanded="false">
+                                <li><a href="/api/packages/create/">Add Package</a></li>
+                                <li><a href="/api/packages/get/">Packages List</a></li>
+                            </ul>
+                        </li>
+                       
+
+                        
+                        <li>
+                            <a href="javascript: void(0);" class="has-arrow">
+                                <i data-feather="layers"></i>
+                                <span data-key="t-authentication">Homepage</span>
+                            </a>
+                            <ul class="sub-menu" aria-expanded="false">
+                                <li class="dropdown">
+                                    <a href="javascript:void(0);" class="has-arrow">Main Banner</a>
+                                    <!-- Nested sub-menu for Main Banner -->
+                                    <ul class="metismenu list-unstyled" id="side-menu">
+                                        <li>
+                                            <a href="/api/homePage/homeBanner/create/">Add Main Banner</a>
+                                        </li>
+                                        <li>
+                                            <a href="/api/homePage/homeBanner/get/">Main Banners List</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li class="dropdown">
+                                    <a href="javascript:void(0);" class="has-arrow">Sections</a>
+                                    <!-- Nested sub-menu for Main Banner -->
+                                    <ul class="metismenu list-unstyled" id="side-menu">
+                                        <li>
+                                            <a href="/api/homePage/homeSection/create/">Add Section</a>
+                                        </li>
+                                        <li>
+                                            <a href="/api/homePage/homeSection/get/">Sections List</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+
+                        
+                        <!-- <li>
+                            <a href="javascript: void(0);" class="has-arrow">
+                                <i data-feather="layers"></i>
+                                <span data-key="t-authentication">SubCategories</span>
+                            </a>
+                            <ul class="sub-menu" aria-expanded="false">
+                                <li><a href="/api/subCategories/create/">Add SubCategory</a></li>
+                                <li><a href="/api/subCategories/get/">SubCategories List</a></li>
+                            </ul>
+                        </li> -->
+
+                        
+                        <li>
+                            <a href="javascript: void(0);" class="has-arrow">
+                                <i data-feather="layers"></i>
+                                <span data-key="t-authentication">Customers</span>
+                            </a>
+                            <ul class="sub-menu" aria-expanded="false">
+                                <li><a href="/api/customers/get/">Customers List</a></li>
+
+                            </ul>
+                        </li>
+
+                        <li>
+                            <a href="javascript: void(0);" class="has-arrow">
+                                <i data-feather="layers"></i>
+                                <span data-key="t-authentication">Orders</span>
+                            </a>
+                            <ul class="sub-menu" aria-expanded="false">
+                                <li><a href="{% url 'recent_orders' %}">Recent Orders</a></li>
+                                <li><a href="{% url 'total_orders' %}" >Total Orders</a></li>
+
+                            </ul>
+                        </li>
+                       
+                        <li>
+                            <a href="javascript: void(0);" class="has-arrow">
+                                <i data-feather="layers"></i>
+                                <span data-key="t-authentication">Tickets</span>
+                            </a>
+                            <ul class="sub-menu" aria-expanded="false">
+                                <li><a href="{% url 'VendorTicket' %}">Recent Tickets</a></li>
+                               <!-- <li><a>Open Tickets</a></li>
+                                <li><a>Closed Tickets</a></li> -->
+
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="javascript: void(0);" class="has-arrow">
+                                <i data-feather="layers"></i>
+                                <span data-key="t-authentication">Vendors</span>
+                            </a>
+                            <ul class="sub-menu" aria-expanded="false">
+                                <li><a href="/api/vendors/vendor-request/">Vendors Requests</a></li>
+                                <li><a href="/api/vendors/get/">Vendors List</a></li>
+{#                                <li><a>Vendors Rating</a></li>#}
+{#                                <li><a>Vendors Portfolio</a></li>#}
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="javascript: void(0);" class="has-arrow">
+                                <i data-feather="layers"></i>
+                                <span data-key="t-authentication">Payments</span>
+                            </a>
+                            <ul class="sub-menu" aria-expanded="false">
+                                <li><a>Recent Payments</a></li>
+                                <li><a>Initiate Refunds</a></li>
+                                <li><a>Refunds</a></li>
+                                <li><a>Payment Reports</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="{% url 'why_avenza' %}" class="has-arrow">
+                                <i data-feather="layers"></i>
+                                <span data-key="t-authentication">Why Avenza</span>
+                            </a>
+                            
+                        </li>
+                        <li>
+                            <a href="javascript: void(0);" class="has-arrow">
+                                <i data-feather="layers"></i>
+                                <span data-key="t-authentication">Testimonials</span>
+                            </a>
+                            <ul class="sub-menu" aria-expanded="false">
+                                <li><a href="{% url 'add_testimonials' %}">Add Testimonials</a></li>
+                                <li><a href="{% url 'list_testimonials' %}">List Testimonials</a></li>
+                               <!-- <li><a>Open Tickets</a></li>
+                                <li><a>Closed Tickets</a></li> -->
+
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="javascript: void(0);" class="has-arrow">
+                                <i data-feather="layers"></i>
+                                <span data-key="t-authentication">Cancelation Policy</span>
+                            </a>
+                            <ul class="sub-menu" aria-expanded="false">
+                                <li><a href="{% url 'add_cancelation_policy' %}">Add Cancelation Policy</a></li>
+                                <li><a href="{% url 'list_cancelation_policy' %}">List Cancelation Policy</a></li>
+                               <!-- <li><a>Open Tickets</a></li>
+                                <li><a>Closed Tickets</a></li> -->
+
+                            </ul>
+                        </li>
+                        <div style="margin: 100% 0 0 35%; align-content: center">
+                            <form method="POST" action="{% url 'adminLogout' %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-primary" style="background-color: #291A4A" >Logout</button>
+                        </form>
+                        </div>
+{#                        <li>#}
+{#                            <a href="javascript: void(0);" class="has-arrow">#}
+{#                                <i data-feather="file-text"></i>#}
+{#                                <span data-key="t-notifications">Pages</span>#}
+{#                            </a>#}
+{#                            <ul class="sub-menu" aria-expanded="false">#}
+{#                                <li><a href="{% url 'notifications:notifications.starter_page' %}" data-key="t-starter-page">Starter Page</a></li>#}
+{#                                <li><a href="{% url 'notifications:notifications.maintenance' %}" data-key="t-maintenance">Maintenance</a></li>#}
+{#                                <li><a href="{% url 'notifications:notifications.comingsoon' %}" data-key="t-coming-soon">Coming Soon</a></li>#}
+{#                                <li><a href="{% url 'notifications:notifications.timeline' %}" data-key="t-timeline">Timeline</a></li>#}
+{#                                <li><a href="{% url 'notifications:notifications.faqs' %}" data-key="t-faqs">FAQs</a></li>#}
+{#                                <li><a href="{% url 'notifications:notifications.pricing' %}" data-key="t-pricing">Pricing</a></li>#}
+{#                                <li><a href="{% url 'notifications:notifications.error_404' %}" data-key="t-error-404">Error 404</a></li>#}
+{#                                <li><a href="{% url 'notifications:notifications.error_500' %}" data-key="t-error-500">Error 500</a></li>#}
+{#                            </ul>#}
+{#                        </li>#}
+
+{#                        <li>#}
+{#                            <a href="{% url 'notifications:notifications.layout.horizontal' %}">#}
+{#                                <i data-feather="layout"></i>#}
+{#                                <i data-feather="layout"></i>#}
+{#                                <span data-key="t-horizontal">Horizontal</span>#}
+{#                            </a>#}
+{#                        </li>#}
+
+{#                        <li class="menu-title mt-2" data-key="t-components">Components</li>#}
+{##}
+{#                        <li>#}
+{#                            <a href="javascript: void(0);" class="has-arrow">#}
+{#                                <i data-feather="briefcase"></i>#}
+{#                                <span data-key="t-components">Bootstrap</span>#}
+{#                            </a>#}
+{#                            <ul class="sub-menu" aria-expanded="false">#}
+{#                                <li><a href="{% url 'components:components.bootstrap.alerts' %}" data-key="t-alerts">Alerts</a></li>#}
+{#                                <li><a href="{% url 'components:components.bootstrap.buttons' %}" data-key="t-buttons">Buttons</a></li>#}
+{#                                <li><a href="{% url 'components:components.bootstrap.cards' %}" data-key="t-cards">Cards</a></li>#}
+{#                                <li><a href="{% url 'components:components.bootstrap.carousel' %}" data-key="t-carousel">Carousel</a></li>#}
+{#                                <li><a href="{% url 'components:components.bootstrap.dropdowns' %}" data-key="t-dropdowns">Dropdowns</a></li>#}
+{#                                <li><a href="{% url 'components:components.bootstrap.grid' %}" data-key="t-grid">Grid</a></li>#}
+{#                                <li><a href="{% url 'components:components.bootstrap.images' %}" data-key="t-images">Images</a></li>#}
+{#                                <li><a href="{% url 'components:components.bootstrap.modals' %}" data-key="t-modals">Modals</a></li>#}
+{#                                <li><a href="{% url 'components:components.bootstrap.offcanvas' %}" data-key="t-offcanvas">Offcanvas</a></li>#}
+{#                                <li><a href="{% url 'components:components.bootstrap.progressbars' %}" data-key="t-progress-bars">Progress Bars</a></li>#}
+{#                                <li><a href="{% url 'components:components.bootstrap.placeholders' %}" data-key="t-progress-bars">Placeholders</a></li>#}
+{#                                <li><a href="{% url 'components:components.bootstrap.tabs' %}" data-key="t-tabs-accordions">Tabs & Accordions</a></li>#}
+{#                                <li><a href="{% url 'components:components.bootstrap.typography' %}" data-key="t-typography">Typography</a></li>#}
+{#                                <li><a href="{% url 'components:components.bootstrap.video' %}" data-key="t-video">Video</a></li>#}
+{#                                <li><a href="{% url 'components:components.bootstrap.general' %}" data-key="t-general">General</a></li>#}
+{#                                <li><a href="{% url 'components:components.bootstrap.colors' %}" data-key="t-colors">Colors</a></li>#}
+{#                            </ul>#}
+{#                        </li>#}
+{#                        <li>#}
+{#                            <a href="javascript: void(0);" class="has-arrow">#}
+{#                                <i data-feather="gift"></i>#}
+{#                                <span data-key="t-ui-elements">Extended</span>#}
+{#                            </a>#}
+{#                            <ul class="sub-menu" aria-expanded="false">#}
+{#                                <li><a href="{% url 'components:components.extended.lightbox' %}" data-key="t-lightbox">Lightbox</a></li>#}
+{#                                <li><a href="{% url 'components:components.extended.rangeslider' %}" data-key="t-range-slider">Range Slider</a></li>#}
+{#                                <li><a href="{% url 'components:components.extended.sweetalerts2' %}" data-key="t-sweet-alert">SweetAlert 2</a></li>#}
+{#                                <li><a href="{% url 'components:components.extended.sessiontimeout' %}" data-key="t-session-timeout">Session Timeout</a></li>#}
+{#                                <li><a href="{% url 'components:components.extended.rating' %}" data-key="t-rating">Rating</a></li>#}
+{#                                <li><a href="{% url 'components:components.extended.notifications' %}" data-key="t-notifications">Notifications</a></li>#}
+{#                            </ul>#}
+{#                        </li>#}
+{##}
+{#                        <li>#}
+{#                            <a href="javascript: void(0);">#}
+{#                                <i data-feather="box"></i>#}
+{#                                <span class="badge rounded-pill bg-soft-danger text-danger float-end">7</span>#}
+{#                                <span data-key="t-forms">Forms</span>#}
+{#                            </a>#}
+{#                            <ul class="sub-menu" aria-expanded="false">#}
+{#                                <li><a href="{% url 'components:components.forms.basic_elements' %}" data-key="t-form-elements">Basic Elements</a></li>#}
+{#                                <li><a href="{% url 'components:components.forms.validation' %}" data-key="t-form-validation">Validation</a></li>#}
+{#                                <li><a href="{% url 'components:components.forms.advancedplugins' %}" data-key="t-form-advanced">Advanced Plugins</a></li>#}
+{#                                <li><a href="{% url 'components:components.forms.editors' %}" data-key="t-form-editors">Editors</a></li>#}
+{#                                <li><a href="{% url 'components:components.forms.fileupload' %}" data-key="t-form-upload">File Upload</a></li>#}
+{#                                <li><a href="{% url 'components:components.forms.wizard' %}" data-key="t-form-wizard">Wizard</a></li>#}
+{#                                <li><a href="{% url 'components:components.forms.mask' %}" data-key="t-form-mask">Mask</a></li>#}
+{#                            </ul>#}
+{#                        </li>#}
+{##}
+{#                        <li>#}
+{#                            <a href="javascript: void(0);" class="has-arrow">#}
+{#                                <i data-feather="sliders"></i>#}
+{#                                <span data-key="t-tables">Tables</span>#}
+{#                            </a>#}
+{#                            <ul class="sub-menu" aria-expanded="false">#}
+{#                                <li><a href="{% url 'components:components.tables.bootstrap_basic' %}" data-key="t-basic-tables">Bootstrap Basic</a></li>#}
+{#                                <li><a href="{% url 'components:components.tables.datatables' %}" data-key="t-data-tables">DataTables</a></li>#}
+{#                                <li><a href="{% url 'components:components.tables.responsive_tables' %}" data-key="t-responsive-table">Responsive</a></li>#}
+{#                                <li><a href="{% url 'components:components.tables.editable_tables' %}" data-key="t-editable-table">Editable</a></li>#}
+{#                            </ul>#}
+{#                        </li>#}
+{##}
+{#                        <li>#}
+{#                            <a href="javascript: void(0);" class="has-arrow">#}
+{#                                <i data-feather="pie-chart"></i>#}
+{#                                <span data-key="t-charts">Charts</span>#}
+{#                            </a>#}
+{#                            <ul class="sub-menu" aria-expanded="false">#}
+{#                                <li><a href="{% url 'components:components.charts.apexcharts' %}" data-key="t-apex-charts">Apexcharts</a></li>#}
+{#                                <li><a href="{% url 'components:components.charts.echarts' %}" data-key="t-e-charts">Echarts</a></li>#}
+{#                                <li><a href="{% url 'components:components.charts.chartjs' %}" data-key="t-chartjs-charts">Chartjs</a></li>#}
+{#                                <li><a href="{% url 'components:components.charts.knob' %}" data-key="t-knob-charts">Jquery Knob</a></li>#}
+{#                                <li><a href="{% url 'components:components.charts.sparkline' %}" data-key="t-sparkline-charts">Sparkline</a></li>#}
+{#                            </ul>#}
+{#                        </li>#}
+{##}
+{#                        <li>#}
+{#                            <a href="javascript: void(0);" class="has-arrow">#}
+{#                                <i data-feather="cpu"></i>#}
+{#                                <span data-key="t-icons">Icons</span>#}
+{#                            </a>#}
+{#                            <ul class="sub-menu" aria-expanded="false">#}
+{#                                <li><a href="{% url 'components:components.icons.feather' %}" data-key="t-feather">Feather</a></li>#}
+{#                                <li><a href="{% url 'components:components.icons.boxicons' %}" data-key="t-boxicons">Boxicons</a></li>#}
+{#                                <li><a href="{% url 'components:components.icons.materialdesign' %}" data-key="t-material-design">Material Design</a></li>#}
+{#                                <li><a href="{% url 'components:components.icons.dripicons' %}" data-key="t-dripicons">Dripicons</a></li>#}
+{#                                <li><a href="{% url 'components:components.icons.fontawesome' %}" data-key="t-font-awesome">Font Awesome 5</a></li>#}
+{#                            </ul>#}
+{#                        </li>#}
+{##}
+{#                        <li>#}
+{#                            <a href="javascript: void(0);" class="has-arrow">#}
+{#                                <i data-feather="map"></i>#}
+{#                                <span data-key="t-maps">Maps</span>#}
+{#                            </a>#}
+{#                            <ul class="sub-menu" aria-expanded="false">#}
+{#                                <li><a href="{% url 'components:components.maps.googlemaps' %}" data-key="t-g-maps">Google</a></li>#}
+{#                                <li><a href="{% url 'components:components.maps.vectormaps' %}" data-key="t-v-maps">Vector</a></li>#}
+{#                                <li><a href="{% url 'components:components.maps.leaflet' %}" data-key="t-l-maps">Leaflet</a></li>#}
+{#                            </ul>#}
+{#                        </li>#}
+{##}
+{#                        <li>#}
+{#                            <a href="javascript: void(0);" class="has-arrow">#}
+{#                                <i data-feather="share-2"></i>#}
+{#                                <span data-key="t-multi-level">Multi Level</span>#}
+{#                            </a>#}
+{#                            <ul class="sub-menu" aria-expanded="true">#}
+{#                                <li><a href="javascript: void(0);" data-key="t-level-1-1">Level 1.1</a></li>#}
+{#                                <li>#}
+{#                                    <a href="javascript: void(0);" class="has-arrow" data-key="t-level-1-2">Level 1.2</a>#}
+{#                                    <ul class="sub-menu" aria-expanded="true">#}
+{#                                        <li><a href="javascript: void(0);" data-key="t-level-2-1">Level 2.1</a></li>#}
+{#                                        <li><a href="javascript: void(0);" data-key="t-level-2-2">Level 2.2</a></li>#}
+{#                                    </ul>#}
+{#                                </li>#}
+{#                            </ul>#}
+{#                        </li>#}
+
+                    </ul>
+
+{#                    <div class="card sidebar-alert shadow-none text-center mx-4 mb-0 mt-5">#}
+{#                        <div class="card-body">#}
+{#                            <img src="{% static 'images/giftbox.png'%}" alt="">#}
+{#                            <div class="mt-4">#}
+{#                                <h5 class="alertcard-title font-size-16">Unlimited Access</h5>#}
+{#                                <p class="font-size-13">Upgrade your plan from a Free trial, to select ‘Business Plan’.</p>#}
+{#                                <a href="#!" class="btn btn-primary mt-2">Upgrade Now</a>#}
+{#                            </div>#}
+{#                        </div>#}
+{#                    </div>#}
+                </div>
+                <!-- Sidebar -->
+            </div>
+        </div>
+        <!-- Left Sidebar End -->
+{% endblock left_sidebar %}

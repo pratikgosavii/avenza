@@ -1,0 +1,116 @@
+{% load static %}
+{% block content %}
+
+    <!-- ============================================================== -->
+    <!-- Start right Content here -->
+    <!-- ============================================================== -->
+    <div class="main-content">
+        <div class="page-content">
+            <div class="container-fluid">
+                <!-- start page title -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                            <h4 class="mb-sm-0 font-size-18">{{ title }}</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-container">
+                    <form method="POST" action="/api/homePage/homeSection/create/" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <!-- HomeSection Title Section -->
+                        <div class="mb-4">
+                            <label for="title" class="form-label">HomeSection Title:</label>
+                            <input
+                                    type="text"
+                                    class="form-control"
+                                    id="title"
+                                    name="title"
+                                    placeholder="Title"
+                                    required
+                            />
+                        </div>
+                        <!-- Dropdown for Location Selection -->
+                        <div class="mb-4">
+                            <label for="location" class="form-label">Locations</label>
+                            <div class="dropdown">
+                                <button class="btn btn-outline-primary dropdown-toggle w-100" type="button" id="locationDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Select Locations
+                                </button>
+                                <ul class="dropdown-menu w-100" aria-labelledby="locationDropdown">
+                                    {% for location in locations %}
+                                        <li>
+                                            <label class="dropdown-item">
+                                                <input type="checkbox" class="form-check-input location-checkbox" value="{{ location.id }}" data-title="{{ location.title }}" name="location"/>
+                                                {{ location.title }}
+                                            </label>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                        <!-- Dropdown for Categories Selection -->
+                        <div class="mb-4">
+                            <label for="categories" class="form-label">Select Categories:</label>
+                            <select class="form-select" id="categories" name="categories"  required>
+                                <option value="" disabled selected>Select categories</option>
+                                {% for category in categories %}
+                                    <option value="{{ category.id }}">{{ category.title }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                       
+                        <div class="mb-4">
+
+                            <label for="packages" class="form-label">Packages</label>
+                            
+                            <div class="dropdown">
+                                <button class="btn btn-outline-primary dropdown-toggle w-100" type="button" id="locationDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Select Packages
+                                </button>
+                                <ul class="dropdown-menu w-100" aria-labelledby="locationDropdown" id="packageDropdownList">
+                                    <!-- Packages will be dynamically added here -->
+                                </ul>
+                            </div>
+
+
+                        </div>
+                        <!-- Banner Image Upload Section -->
+                        <div class="mb-4">
+                            <label for="image" class="form-label mb-4">Upload Banner Images:</label>
+                            <input
+                                    type="file"
+                                    class="form-control"
+                                    id="image"
+                                    name="image"
+                                    accept="image/*"
+                            />
+                            <img id="homeSectionImage" class="image-preview" src="" alt="Preview" hidden/>
+                        </div>
+                        <!-- HomeSection Description Section -->
+                        <div class="mb-4">
+                            <label for="description" class="form-label">HomeSection Description:</label>
+                            <textarea
+                                    class="form-control description-box"
+                                    id="description"
+                                    name="description"
+                                    placeholder="Description"
+                            ></textarea>
+                        </div>
+                        <!-- Submit Button -->
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary custom-button">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- container-fluid -->
+        </div>
+        <!-- End Page-content -->
+
+        {% block footer %}
+            {% include 'partials/footer.html' %}
+        {% endblock footer %}
+    </div>
+    <!-- end main content-->
+{% endblock content %}

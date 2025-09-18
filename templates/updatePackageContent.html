@@ -1,0 +1,377 @@
+{% load static %}
+{% block content %}
+<!-- ============================================================== -->
+<!-- Start right Content here -->
+<!-- ============================================================== -->
+
+<div class="main-content">
+  <div class="page-content">
+    <div class="container-fluid">
+      <div class="container mt-4">
+        <h3 class="mb-4">Update Package</h3>
+
+        <!-- Sections (Basic Information, Images, Customization) -->
+        <div id="packageSections">
+          <!-- Basic Information Section -->
+          <div class="card mb-4">
+            <div class="card-header">
+              <h5 class="mb-0">Package Details</h5>
+              <small class="text-white-muted">Fill all information below</small>
+            </div>
+            <div class="card-body">
+              <form id="updatePackageForm" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="row mb-3">
+                  <div class="col-md-6">
+                      <label for="packageName" class="form-label">Package Name</label>
+                      <input type="text" class="form-control" id="packageName" name="title" value="{{ Package_instance.title }}" placeholder="Enter package name" required />
+                  </div>
+                  <div class="col-md-6">
+                    <label for="Category" class="form-label">Category</label>
+                    <div class="dropdown">
+                        <button class="btn btn-outline-primary dropdown-toggle w-100" type="button" id="CategoryDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            Select Category
+                        </button>
+                        <ul class="dropdown-menu w-100" aria-labelledby="CategoryDropdown">
+                            {% for Category in Categories %}
+                                <li>
+                                    <label class="dropdown-item">
+                                        <input 
+                                            type="checkbox" 
+                                            class="form-check-input Category-checkbox" 
+                                            value="{{ Category.id }}" 
+                                            data-title="{{ Category.title }}" 
+                                            name="category" 
+                                            {% if Category in Package_instance.categories.all %}checked{% endif %} />
+                                        {{ Category.title }}
+                                    </label>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+          
+
+                <div class="row mb-3">
+                  <div class="col-md-6">
+                      <label for="locations" class="form-label">Package Inclusion</label>
+                      <div class="dropdown">
+                          <button class="btn btn-outline-primary dropdown-toggle w-100" type="button" id="locationDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                              Select Package Inclusion
+                          </button>
+                          <ul class="dropdown-menu w-100" aria-labelledby="locationDropdown">
+                              {% for i in packageinclusion %}
+                                  <li>
+                                      <label class="dropdown-item">
+                                          <input type="checkbox" class="form-check-input i-checkbox" value="{{ i.id }}" data-title="{{ i.title }}" name="package_inclusion" 
+                                          {% if i in Package_instance.package_inclusion.all %}checked{% endif %}
+                                          />
+                                          {{ i.title }}
+                                      </label>
+                                  </li>
+                              {% endfor %}
+                          </ul>
+                      </div>
+                  </div>
+
+                  <div class="col-md-6">
+                      <label for="locations" class="form-label">Package Need To Know</label>
+                      <div class="dropdown">
+                          <button class="btn btn-outline-primary dropdown-toggle w-100" type="button" id="locationDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                              Select Need To Know
+                          </button>
+                          <ul class="dropdown-menu w-100" aria-labelledby="locationDropdown">
+                              {% for i in need_to_know %}
+                                  <li>
+                                      <label class="dropdown-item">
+                                          <input type="checkbox" class="form-check-input need_to_know-checkbox" value="{{ i.id }}" data-title="{{ i.title }}" name="need_to_know"
+                                          {% if i in Package_instance.need_to_know.all %}checked{% endif %}
+                                           />
+                                          {{ i.title }}
+                                      </label>
+                                  </li>
+                              {% endfor %}
+                          </ul>
+                      </div>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-md-6">
+                    <label for="locations" class="form-label">Locations</label>
+                    <div class="dropdown">
+                      <button class="btn btn-outline-primary dropdown-toggle w-100" type="button" id="locationDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                          Select Locations
+                      </button>
+                      <ul class="dropdown-menu w-100" aria-labelledby="locationDropdown">
+                        {% for location in locations %}
+                          <li>
+                              <label class="dropdown-item">
+                                  <input type="checkbox" class="form-check-input location-checkbox" 
+                                      name="location" value="{{ location.id }}" 
+                                      {% if location.id in associated_location_prices %}checked{% endif %} 
+                                      data-title="{{ location.title }}" onclick="updatePriceFields()" />
+                                  {{ location.title }}
+                                  
+                              </label>
+                          </li>
+                        {% endfor %}
+                      </ul>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 mt-4" style="margin-top:30px;" id="priceFields">
+                  {% for location_id, price in associated_location_prices.items %}
+                  <input type="text" class="form-control mb-2" 
+                         value="{{ price|floatformat:2 }}" 
+                         placeholder="Enter price for Location ID: {{ location_id }}" 
+                         name="price_{{ forloop.counter0 }}">
+              {% endfor %}
+                </div> <!-- Dynamic price fields here -->
+              </div>
+            
+              <div class="row mb-3">
+                  <div class="col-md-12">
+                      <label for="shortDescription" class="form-label">Short Description</label>
+                      <input type="text" class="form-control" id="shortDescription" name="shortDescription" value="{{ Package_instance.description }}" placeholder="Enter short description" required />
+                  </div>
+              </div>
+        
+              <div class="mb-3">
+                  <label for="packageDescription" class="form-label">Package Description</label>
+                  <textarea class="form-control" id="packageDescription" name="description" rows="3" placeholder="Enter description" required> {{ Package_instance.description }}</textarea>
+              </div>
+                
+              <div class="card mb-5">
+                <div class="card-header">
+                    <h5 class="mb-0">Package Images</h5>
+                </div>
+                <div class="card-body">
+                    <input type="file" class="form-control" 
+                    id="packageImages" name="packageImages" 
+                    multiple 
+                    onchange="displaySelectedImages()" />
+                    <div class="mt-3" id="selectedImages" style="display: flex; gap: 10px; flex-wrap: wrap"></div>
+                </div>
+
+                <div id="existingImageContainer" style="position: relative;">
+                  {% if Package_instance.image %}
+                      <img
+                          src="{{ Package_instance.image.url }}"
+                          alt="Existing Image"
+                          id="existingImage"
+                          style="width: 100px; height: 100px; object-fit: cover; border: 1px solid #ddd; border-radius: 5px;"
+                      />
+                  {% endif %}
+              </div>
+            </div>
+          
+            <div class="card mb-5">
+              <div class="card-header">
+                <h5 class="mb-0">Customizations</h5>
+              </div>
+              <div class="card-body">
+                <label for="customOptions" class="form-label">Select Customizations</label>
+                <div class="dropdown">
+                  <input type="button"
+                    class="btn btn-outline-primary dropdown-toggle w-50"
+                    type="button"
+                    id="customDropdown"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                  value="Select Customizations"
+                  />
+                  <ul class="dropdown-menu w-50" aria-labelledby="customDropdown" id="customOptions">
+                    {% for customize in customize %}
+                    <li>
+                      <label class="dropdown-item d-flex justify-content-between align-items-center">
+                        <input
+                          type="checkbox"
+                          class="form-check-input customization-checkbox"
+                          value="{{ customize.id }}"
+                          data-title="{{ customize.title }}"
+                          name="customizations"
+                        />
+                        {{ customize.title }}
+                        <img
+                          src="{{ customize.image.url }}"
+                          alt="Image"
+                          class="img-thumbnail"
+                          width="50"
+                        />
+                      </label>
+                    </li>
+                    {% endfor %}
+                  </ul>
+                </div>
+                <table class="table mt-4">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Title</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody id="customizationTable">
+                    {% for i in Package_instance.customizations.all %}
+                      <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ i.title }}</td>
+                        <td> <input type="button" class="btn btn-danger btn-sm" onclick="deleteRow(this)" value="Remove"/></td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <input type="submit" id="submit_button" class="btn btn-secondary" value="Submit Package" />
+          </form>
+    </div>
+  </div>
+</div>
+
+
+  </div>
+</div>
+</div>
+</div>
+
+
+{% endblock content %}
+{% block extra_js %}
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+  document.getElementById("updatePackageForm").addEventListener("submit", function(event) {
+    event.preventDefault();  // Prevent the default form submission
+
+    const formData = new FormData(this);  // Prepare form data including file data
+
+    // Add CSRF token to the form data
+    formData.append("csrfmiddlewaretoken", document.querySelector('[name="csrfmiddlewaretoken"]').value);
+
+    // Add price data dynamically
+    const selectedLocations = Array.from(document.querySelectorAll(".location-checkbox:checked")).map(cb => ({
+      id: cb.value,
+      title: cb.getAttribute("data-title")
+    }));
+
+    selectedLocations.forEach((location, index) => {
+      const priceInput = document.querySelector(`input[name="price_${index}"]`);
+      if (priceInput) {
+        formData.append(`price_${index}`, priceInput.value); // Append the price for each selected location
+      }
+    });
+
+    // Check for customization checkboxes and append them to the form data
+    const selectedCustomizations = Array.from(document.querySelectorAll(".customization-checkbox:checked")).map(cb => cb.value);
+    selectedCustomizations.forEach((customizationId) => {
+      formData.append('customizations', customizationId);
+    });
+
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+
+    // Make AJAX POST request to update the package
+    $.ajax({
+      type: "POST",  // Use POST instead of PUT
+      url: "{% url 'updatePackage' Package_instance.id %}",  // Ensure the URL is correct for your package update view
+      data: formData,
+      processData: false,  // Don't process data (important for file uploads)
+      contentType: false,
+      credentials: 'same-origin',
+        headers: {
+            'X-CSRFToken': csrfToken  // Send CSRF token in the request header
+        },  // Don't set content-type (important for file uploads)
+      success: function(response) {
+        console.log("Package updated successfully:", response);
+        window.location.href = "{% url 'getPackageList' %}";  // Redirect after successful update
+      },
+      error: function(xhr, status, error) {
+        console.error("Error updating package:", error);
+        alert("Error: Unable to update package.");
+      }
+    });
+  });
+
+  function updatePriceFields() {
+    const priceFieldsContainer = document.getElementById("priceFields");
+    priceFieldsContainer.innerHTML = ""; // Clear previously displayed price fields
+
+    // Get all the selected checkboxes (locations)
+    const selectedLocations = Array.from(
+      document.querySelectorAll(".location-checkbox:checked")
+    ).map((cb) => ({
+      id: cb.value,
+      title: cb.getAttribute("data-title") // Get the location title from the data attribute
+    }));
+
+    // Generate price input fields for each selected location
+    selectedLocations.forEach((location, index) => {
+      const input = document.createElement("input");
+      input.type = "text";
+      input.className = "form-control mb-2";
+      input.placeholder = `Enter price for ${location.title}`; // Use location title as the placeholder
+      input.name = `price_${index}`; // Dynamic name for each location price
+      priceFieldsContainer.appendChild(input);
+    });
+  }
+
+  // Handle image preview
+  function displaySelectedImages() {
+    const input = document.getElementById("packageImages");
+    const selectedImagesContainer = document.getElementById("selectedImages");
+    selectedImagesContainer.innerHTML = ""; // Clear previously displayed images
+
+    Array.from(input.files).forEach((file) => {
+      if (file.type.startsWith("image/")) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          const imageDiv = document.createElement("div");
+          imageDiv.style.position = "relative";
+          const img = document.createElement("img");
+          img.src = event.target.result;
+          img.alt = file.name;
+          img.style.width = "100px";
+          img.style.height = "100px";
+          img.style.objectFit = "cover";
+          img.style.border = "1px solid #ddd";
+          img.style.borderRadius = "5px";
+          imageDiv.appendChild(img);
+          selectedImagesContainer.appendChild(imageDiv);
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  }
+
+  // Handle customizations
+  document.querySelectorAll(".customization-checkbox").forEach((checkbox) => {
+    checkbox.addEventListener("change", function () {
+      const table = document.getElementById("customizationTable");
+      const customizationId = this.value;
+      const customizationTitle = this.dataset.title;
+
+      if (this.checked) {
+        const row = table.insertRow();
+        row.setAttribute("data-id", customizationId);
+        row.innerHTML = `
+          <td>${customizationId}</td>
+          <td>${customizationTitle}</td>
+          <td><button class="btn btn-danger btn-sm" onclick="deleteRow(this)">Remove</button></td>
+        `;
+      } else {
+        const row = table.querySelector(`[data-id="${customizationId}"]`);
+        if (row) row.remove();
+      }
+    });
+  });
+
+  // Function to remove row
+  function deleteRow(button) {
+    button.closest("tr").remove();
+  }
+</script>
+
+{% endblock extra_js %}

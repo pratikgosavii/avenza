@@ -1,0 +1,225 @@
+{% extends "partials/adminBase.html" %}
+{% load static %}
+
+{% block title %}update Customer{% endblock title %}
+
+{% block extra_css %}
+    <!-- plugin css -->
+    <link href="{% static 'libs/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <style>
+        body {
+            background-color: #f0d28c;
+            padding-bottom: 20px;
+        }
+
+        .form-container {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-heading {
+            text-align: left;
+            margin-bottom: 20px;
+            font-weight: bold;
+            font-size: 2rem;
+            color: #291a4a;
+        }
+
+        .description-box {
+            height: 150px;
+            resize: none;
+        }
+
+        .image-preview {
+            max-height: 100px;
+            margin-top: 10px;
+        }
+
+        .btn-primary {
+            background-color: #291a4a;
+            border-color: #291a4a;
+        }
+
+        .custom-button {
+            width: 150px;
+        }
+    </style>
+{% endblock extra_css %}
+
+{% block content %}
+<!-- ============================================================== -->
+<!-- Start right Content here -->
+<!-- ============================================================== -->
+
+<div class="main-content">
+  <div class="page-content">
+    <div class="container-fluid">
+      <div class="container mt-4">
+        <h3 class="mb-4">Add Package</h3>
+
+        <!-- Sections (Basic Information, Images, Customization) -->
+        <div id="packageSections">
+          <!-- Basic Information Section -->
+          <div class="card mb-4">
+            <div class="card-header">
+              <h5 class="mb-0">Package Details</h5>
+              <small class="text-white-muted">Fill all information below</small>
+            </div>
+            <div class="card-body">
+              <form id="packageForm" method="POST" action="{% url 'createPackage' %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="packageName" class="form-label">Package Name</label>
+                        <input type="text" class="form-control" id="packageName" name="title" placeholder="Enter package name" required />
+                    </div>
+                    <div class="col-md-6">
+                        <label for="category" class="form-label">Category</label>
+                        <select class="form-select" id="category" name="category" required>
+                            <option value="" disabled selected>Select</option>
+                            {% for Category in Categories %}
+                                <option value="{{ Category.id }}">{{ Category.title }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="locations" class="form-label">Locations</label>
+                        <div class="dropdown">
+                            <button class="btn btn-outline-primary dropdown-toggle w-100" type="button" id="locationDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                Select Locations
+                            </button>
+                            <ul class="dropdown-menu w-100" aria-labelledby="locationDropdown">
+                                {% for location in locations %}
+                                    <li>
+                                        <label class="dropdown-item">
+                                            <input type="checkbox" class="form-check-input location-checkbox" value="{{ location.id }}" data-title="{{ location.title }}" name="location" onclick="updatePriceFields()" />
+                                            {{ location.title }}
+                                        </label>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6" id="priceFields"></div> <!-- Dynamic price fields here -->
+                </div>
+            
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <label for="shortDescription" class="form-label">Short Description</label>
+                        <input type="text" class="form-control" id="shortDescription" name="shortDescription" placeholder="Enter short description" required />
+                    </div>
+                </div>
+            
+                <div class="mb-3">
+                    <label for="packageDescription" class="form-label">Package Description</label>
+                    <textarea class="form-control" id="packageDescription" name="description" rows="3" placeholder="Enter description" required></textarea>
+                </div>
+                
+                <div class="card mb-5">
+                  <div class="card-header">
+                      <h5 class="mb-0">Package Images</h5>
+                  </div>
+                  <div class="card-body">
+                      <input type="file" class="form-control" id="packageImages" name="packageImages" multiple onchange="displaySelectedImages()" />
+                      <div class="mt-3" id="selectedImages" style="display: flex; gap: 10px; flex-wrap: wrap"></div>
+                  </div>
+              </div>
+            
+                <!-- <button type="submit" class="btn btn-primary">Create Package</button> -->
+                          <!-- Customization Section -->
+                          <div class="card mb-5">
+                            <div class="card-header">
+                              <h5 class="mb-0">Customizations</h5>
+                            </div>
+                            <div class="card-body">
+                              <label for="customOptions" class="form-label">Select Customizations</label>
+                              <div class="dropdown">
+                                <button
+                                  class="btn btn-outline-primary dropdown-toggle w-50"
+                                  type="button"
+                                  id="customDropdown"
+                                  data-bs-toggle="dropdown"
+                                  aria-expanded="false"
+                                >
+                                  Select Customizations
+                                </button>
+                                <ul class="dropdown-menu w-50" aria-labelledby="customDropdown" id="customOptions">
+                                  {% for customize in customize %}
+                                  <li>
+                                    <label class="dropdown-item d-flex justify-content-between align-items-center">
+                                      <input
+                                        type="checkbox"
+                                        class="form-check-input customization-checkbox"
+                                        value="{{ customize.id }}"
+                                        data-title="{{ customize.title }}"
+                                        name="customizations"
+                                      />
+                                      {{ customize.title }}
+                                      <img
+                                        src="{{ customize.image.url }}"
+                                        alt="Image"
+                                        class="img-thumbnail"
+                                        width="50"
+                                      />
+                                    </label>
+                                  </li>
+                                  {% endfor %}
+                                </ul>
+                              </div>
+                              <table class="table mt-4">
+                                <thead>
+                                  <tr>
+                                    <th>#</th>
+                                    <th>Title</th>
+                                    <th>Action</th>
+                                  </tr>
+                                </thead>
+                                <tbody id="customizationTable"></tbody>
+                              </table>
+                            </div>
+                          </div>
+          
+                          <!-- <div class="submit-btn-container" style="margin-bottom: 20px">
+                            <button type="submit" form="packageForm" class="btn btn-primary">Create Package</button>
+                          </div> -->
+                        </form>
+                        <div class="submit-btn-container" style="margin-bottom: 20px">
+                          <button type="submit" form="packageForm" class="btn btn-secondary">
+                            Submit Package
+                          </button>
+                        </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+
+{% endblock content %}
+
+{% block extra_js %}
+    <!-- apexcharts -->
+    <script src="{% static 'libs/apexcharts/dist/apexcharts.min.js' %}"></script>
+   
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'libs/admin-resources/jquery.vectormap/maps/jquery-jvectormap-world-mill-en.js' %}"></script>
+    <script src="{% static 'js/pages/allchart.js' %}"></script>
+    <!-- dashboard init -->
+    <script src="{% static 'js/pages/dashboard.init.js' %}"></script>
+{% endblock extra_js %}

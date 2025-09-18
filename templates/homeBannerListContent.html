@@ -1,0 +1,77 @@
+{% load static %}
+{% block content %}
+
+    <!-- ============================================================== -->
+    <!-- Start right Content here -->
+    <!-- ============================================================== -->
+    <div class="main-content">
+        <div class="page-content">
+            <div class="container-fluid">
+                <!-- start page title -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                            <h4 class="mb-sm-0 font-size-18">{{ title }}</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table
+                                                id="datatable"
+                                                class="table table-bordered table-striped"
+                                        >
+                                            <thead>
+                                            <tr>
+                                                <th>Id</th>
+                                                <th>Title</th>
+                                                <th>Location</th>
+                                                <th>Image</th>
+                                                <th>Description</th>
+                                                <th>Action</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody id="tableBody">
+                                            {% for homeBanner in homeBanners %}
+                                                <tr>
+                                                    <td>{{ homeBanner.id }}</td>
+                                                    <td>{{ homeBanner.title }}</td>
+                                                    <td>{% for location in homeBanner.locationDetails %}
+                                                        <li>{{ location.title }}</li>
+                                                        {% endfor %}
+                                                        <td>
+                                                            <img src="{{ homeBanner.image }}" alt="HomeBanner Image"
+                                                                 style="max-width: 100px; max-height: 100px; object-fit: cover;">
+                                                        </td>
+                                                        <td>{{ homeBanner.description }}</td>
+                                                        
+                                                    <td>
+                                                       
+                                                        <a href="{% url 'updateHomeBannerDetail' homeBanner.id %}"><i class="bi bi-pencil-square text-primary action-icons edit" title="Edit"></i>  </a>
+                                                        <a href="{% url 'deleteHomeBanner' homeBanner.id %}"> <i class="bi bi-trash text-danger action-icons delete" title="Delete"></i> </a>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- container-fluid -->
+        </div>
+        <!-- End Page-content -->
+
+        {% block footer %}
+            {% include 'partials/footer.html' %}
+        {% endblock footer %}
+    </div>
+    <!-- end main content-->
+{% endblock content %}

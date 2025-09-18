@@ -1,0 +1,96 @@
+{% load static %}
+{% block content %}
+
+    <!-- ============================================================== -->
+    <!-- Start right Content here -->
+    <!-- ============================================================== -->
+    <div class="main-content">
+        <div class="page-content">
+            <div class="container-fluid">
+                <!-- start page title -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                            <h4 class="mb-sm-0 font-size-18">{{ title }}</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table
+                                                id="datatable"
+                                                class="table table-bordered table-striped"
+                                        >
+                                            <thead>
+                                            <tr>
+                                                <th>Id</th>
+                                                <th>Title</th>
+                                                <th>Location</th>
+                                                <th>Image</th>
+                                                <th>Icon</th>
+                                                <th>Banner Image</th>
+                                                <th>Description</th>
+                                                <th>Action</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody id="tableBody">
+                                                {% if categories %}
+                                            {% for category in categories %}
+                                                <tr>
+                                                    <td>{{ forloop.counter }}</td>
+                                                    <td>{{ category.title }}</td>
+                                                    <td> {% for location in category.locationDetails %}
+                                                        {{ location.title }}
+                                                    {% endfor %}
+                                                </td>
+                                                    <td>
+                                                        <img src="{{ category.category_image }}" alt="Banner Image" style="width: 100px; height: auto;">
+                                                     </td>
+                                                    <td>
+                                                        <img src="{{ category.icon }}" alt="Banner Image" style="width: 100px; height: auto;">
+                                                    </td>
+                                                    <td> 
+                                                        {% for banner in category.banner_images_read %}
+                                                            <img src="{{ banner.url }}" alt="Banner Image" style="width: 100px; height: auto;">
+                                                        {% endfor %}
+                                                        
+                                                    </td>
+
+                                                    <td>{{ category.description }}</td>
+                                                    {#                        <td>#}
+                                                    {#                            <button type="submit" class="btn btn-success w-10">Accept</button>#}
+                                                    {#                            <button type="submit" class="btn btn-danger w-5">Reject</button>#}
+                                                    {#                        </td>#}
+                                                    <td>
+                                                        <!-- remove Button -->
+                                                        <a href="{% url 'updateCategoryDetail' category.id %}" ><i class="bi bi-pencil-square text-primary action-icons edit"  title="Edit"></i>  </a>
+                                                        <a href="{% url 'deleteCategory' category.id %}" > <i class="bi bi-trash text-danger action-icons delete" title="Delete"></i> </a>
+
+
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                            {% endif %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- container-fluid -->
+        </div>
+        <!-- End Page-content -->
+
+        {% block footer %}
+            {% include 'partials/footer.html' %}
+        {% endblock footer %}
+    </div>
+    <!-- end main content-->
+{% endblock content %}

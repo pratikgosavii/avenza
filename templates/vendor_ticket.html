@@ -1,0 +1,202 @@
+{% extends "partials/adminBase.html" %}
+{% load static %}
+
+{% block title %}Customer Tickets{% endblock title %}
+
+
+
+
+{% block content %}
+<div class="main-content">
+  <div class="page-content">
+      <div class="container-fluid">
+  <div class="card shadow-lg">
+    <div class="card-header text-white rounded-top">
+      <h4 class="fw-bold mb-0">Customer Tickets</h4>
+    </div>
+    <div class="card-body">
+      <!-- Filter Tabs -->
+      <div class="mb-4 d-flex justify-content-start gap-3">
+        <button class="btn btn-outline-primary filter-btn rounded-pill px-4 py-2" data-filter="all">All</button>
+        <button class="btn btn-outline-warning filter-btn rounded-pill px-4 py-2" data-filter="in_progress">In-Progress</button>
+        <button class="btn btn-outline-success filter-btn rounded-pill px-4 py-2" data-filter="approved">Resolved</button>
+        <button class="btn btn-outline-secondary filter-btn rounded-pill px-4 py-2" data-filter="closed">Closed</button>
+      </div>   
+
+      <!-- Search Box -->
+      <div class="mb-4">
+        <input type="text" id="ticketSearch" class="form-control form-control-lg" placeholder="Search tickets..." />
+      </div>
+
+      <!-- Ticket Table -->
+      <form id="bulk-actions-form" method="post" action="{% url 'VendorTicket' %}">
+        {% csrf_token %}
+        <div class="table-responsive">
+          <table class="table table-hover align-middle">
+            <thead class="table-dark">
+              <tr>
+                <th><input type="checkbox" id="select-all" class="form-check-input" /></th>
+                <th>Ticket ID</th>
+                <th>Order ID</th>
+                <th>Customer</th>
+                <th>Vendor</th>
+                <th>Status</th>
+                <th>Created At</th>
+              </tr>
+            </thead>
+            <tbody id="ticketTable">
+              {% for ticket in data %}
+                <tr class="ticket-row" data-status="{{ ticket.status|lower }}">
+                  <td><input type="checkbox" name="ticket_ids" value="{{ ticket.id }}" class="ticket-checkbox" /></td>
+                  <td>{{ ticket.id }}</td>
+                  <td>{{ ticket.order_id }}</td>
+                  <td>{{ ticket.customer }}</td>
+                  <td>{{ ticket.vendor }}</td>
+                  <td>
+                    <span class="badge 
+                      {% if ticket.status|lower == 'open' %} bg-primary 
+                      {% elif ticket.status|lower == 'in_progress' %} bg-warning 
+                      {% elif ticket.status|lower == 'resolved' %} bg-success 
+                      {% elif ticket.status|lower == 'closed' %} bg-secondary 
+                      {% else %} bg-dark 
+                      {% endif %}">
+                      {{ ticket.status }}
+                    </span>
+                  </td>
+                  <td>{{ ticket.created_at }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Bulk Actions -->
+        <div class="d-flex justify-content-between mt-4 align-items-center">
+          <div class="d-flex gap-3">
+            <button class="btn btn-outline-success rounded-pill px-4 py-2" name="action" value="approve">Approve Selected</button>
+            <button class="btn btn-outline-danger rounded-pill px-4 py-2" name="action" value="deny">Deny Selected</button>
+            <button class="btn btn-outline-secondary rounded-pill px-4 py-2" name="action" value="delete">Delete Selected</button>
+          </div>
+          <div class="d-flex gap-3 align-items-center">
+            <select class="form-select form-select-lg" name="new_status" id="bulk-status-dropdown">
+              <option value="" disabled selected>Change Status</option>
+              <option value="in_progress">In Progress</option>
+              <option value="resolved">Resolved</option>
+              <option value="closed">Closed</option>
+            </select>
+            <button class="btn btn-primary rounded-pill px-4 py-2" name="action" value="update_status">Apply</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+{% endblock content %}
+
+{% block extra_js %}
+<script>
+  // Function to fetch and update the tickets based on filter
+  document.addEventListener('DOMContentLoaded', function() {
+    // Select all checkbox functionality
+    const selectAllCheckbox = document.getElementById('select-all');
+    const ticketCheckboxes = document.getElementsByClassName('ticket-checkbox');
+
+    selectAllCheckbox.addEventListener('change', function() {
+        Array.from(ticketCheckboxes).forEach(checkbox => {
+            checkbox.checked = selectAllCheckbox.checked;
+        });
+    });
+
+    // Update select-all checkbox state when individual checkboxes change
+    Array.from(ticketCheckboxes).forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            const allChecked = Array.from(ticketCheckboxes).every(cb => cb.checked);
+            const noneChecked = Array.from(ticketCheckboxes).every(cb => !cb.checked);
+            
+            selectAllCheckbox.checked = allChecked;
+            selectAllCheckbox.indeterminate = !allChecked && !noneChecked;
+        });
+    });
+
+    // Original filter functionality
+    document.querySelectorAll(".filter-btn").forEach((button) => {
+        button.addEventListener("click", function() {
+            const filter = this.dataset.filter;
+            const rows = document.querySelectorAll(".filter-btn");
+            rows.forEach((btn) => btn.classList.remove("active"));
+            this.classList.add("active");
+            fetchTickets(filter);
+        });
+    });
+
+    // Modified fetchTickets to maintain checkbox state
+    function fetchTickets(filter) {
+        const requestOptions = {
+            method: "GET",
+            redirect: "follow"
+        };
+
+        fetch(`/api/vendors/vendor-tickets/filter/?tag=${filter}`, requestOptions)
+            .then((response) => response.json())
+            .then((result) => {
+                const ticketTable = document.getElementById('ticketTable');
+                ticketTable.innerHTML = '';
+                
+                result.data.forEach(ticket => {
+                    const row = document.createElement('tr');
+                    row.classList.add('ticket-row');
+                    row.dataset.status = ticket.status.toLowerCase();
+                    
+                    row.innerHTML = `
+                        <td><input type="checkbox" name="ticket_ids" value="${ticket.id}" class="ticket-checkbox" /></td>
+                        <td>${ticket.id}</td>
+                        <td>${ticket.order_id}</td>
+                        <td>${ticket.customer}</td>
+                        <td>${ticket.vendor}</td>
+                        <td>
+                            <span class="badge ${getStatusClass(ticket.status)}">
+                                ${ticket.status}
+                            </span>
+                        </td>
+                        <td>${ticket.created_at}</td>
+                    `;
+                    ticketTable.appendChild(row);
+                });
+
+                // Reattach checkbox listeners after content update
+                attachCheckboxListeners();
+            })
+            .catch((error) => console.error(error));
+    }
+
+    function getStatusClass(status) {
+        const statusLower = status.toLowerCase();
+        switch(statusLower) {
+            case 'open': return 'bg-primary';
+            case 'in_progress': return 'bg-warning';
+            case 'resolved': return 'bg-success';
+            case 'closed': return 'bg-secondary';
+            default: return 'bg-dark';
+        }
+    }
+
+    function attachCheckboxListeners() {
+        const newTicketCheckboxes = document.getElementsByClassName('ticket-checkbox');
+        Array.from(newTicketCheckboxes).forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const allChecked = Array.from(newTicketCheckboxes).every(cb => cb.checked);
+                const noneChecked = Array.from(newTicketCheckboxes).every(cb => !cb.checked);
+                
+                selectAllCheckbox.checked = allChecked;
+                selectAllCheckbox.indeterminate = !allChecked && !noneChecked;
+            });
+        });
+    }
+
+    // Initial fetch
+    fetchTickets('all');
+});
+</script>
+{% endblock extra_js %}

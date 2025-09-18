@@ -1,0 +1,85 @@
+{% load static %}
+{% block content %}
+<!-- ============================================================== -->
+<!-- Start right Content here -->
+<!-- ============================================================== -->
+<div class="main-content">
+    <div class="page-content">
+        <div class="container-fluid">
+            <!-- start page title -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                        <h4 class="mb-sm-0 font-size-18">Customer List</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table id="datatable" class="table table-bordered table-striped">
+                                        <thead>
+                                        <tr>
+                                            <th>Username</th>
+                                            <th>Contact Number</th>
+                                            <th>Email</th>
+                                            <!-- <th>DateOfBirth</th> -->
+                                            <!-- <th>Gender</th> -->
+                                            <th>Gender</th>
+                                            <!-- <th>Address2</th> -->
+                                            <th>Action</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody id="tableBody">
+                                        {% for customer in customers %}
+                                            <tr>
+                                                <td>{{ customer.user.username }}</td>
+                                                <td>{{ customer.customerPhoneNumber }}</td>
+                                                <td>{{ customer.user.email }}</td>
+                                                <!-- <td>{{ customer.dateOfBirth }}</td> -->
+                                                <td>{{ customer.gender }}</td> 
+                                                <!-- <td>{{ customer.address1 }}</td> -->
+                                                <!-- <td>{{ customer.address2 }}</td> -->
+                                               
+                                                <td>
+
+                                                    <span style="display: flex;">
+                                                  
+                                                        <!-- Edit Button: This will lead to the customer edit form -->
+      
+                                                        <a href="{% url 'customerUpdate' customer.id %}"  ><i class="bi bi-pencil-square text-primary action-icons edit"  title="Edit"></i>  </a>
+      
+      
+                                                        <form action="{% url 'customerDelete' customer.id %}"  method="post" class="reject-form">
+                                                          {% csrf_token %}
+                                                          
+                                                          <button type="submit" style="background: none; border: none;" class="bi bi-trash text-danger action-icons delete" title="Delete"></i> </button>
+                                                      </form>
+      
+                                                    </span>
+
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- container-fluid -->
+    </div>
+    <!-- End Page-content -->
+
+    {% block footer %}
+        {% include 'partials/footer.html' %}
+    {% endblock footer %}
+</div>
+<!-- end main content-->
+{% endblock content %}

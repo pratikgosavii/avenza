@@ -1,0 +1,276 @@
+{% load static %}
+{% block content %}
+
+    <!-- ============================================================== -->
+    <!-- Start right Content here -->
+    <!-- ============================================================== -->
+    <div class="main-content">
+        <div class="page-content">
+            <div class="container-fluid">
+                <!-- start page title -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                            <h4 class="mb-sm-0 font-size-18">{{ title }}</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-container">
+                    <form method="POST" id="updateHomeSectionForm" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <!-- HomeSection Title Section -->
+                        <div class="mb-4">
+                            <label for="title" class="form-label">HomeSection Title:</label>
+                            <input
+                                    type="text"
+                                    class="form-control"
+                                    id="title"
+                                    value="{{ home_section.title }}"
+                                    name="title"
+                                    placeholder="Title"
+                                    required
+                            />
+                        </div>
+                        <!-- Dropdown for Location Selection -->
+                        <div class="mb-4">
+                            <label for="location" class="form-label">Locations</label>
+                            <div class="dropdown">
+                                <button class="btn btn-outline-primary dropdown-toggle w-100" type="button" id="locationDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Select Locations
+                                </button>
+                                <ul class="dropdown-menu w-100" aria-labelledby="locationDropdown">
+                                    {% for location in locations %}
+                                    <li>
+                                        <label class="dropdown-item">
+                                            <input type="checkbox" class="form-check-input location-checkbox"
+                                                name="location" value="{{ location.id }}"
+                                                {% if location in home_section.location.all %}checked{% endif %}
+                                                data-title="{{ location.title }}" />
+                                            {{ location.title }}
+                                        </label>
+                                    </li>
+                                    {% endfor %}
+                                    
+                                </ul>
+                            </div>
+                        </div>
+                        <!-- Dropdown for Categories Selection -->
+                        <div class="mb-4">
+                            <label for="categories" class="form-label">Select Categories:</label>
+                            <select class="form-select" id="categories" name="categories"  required>
+                                <option value="" disabled selected>Select categories</option>
+                                {% for category in categories %}
+                                    <option value="{{ category.id }}" {% if category in home_section.categories.all %}selected{% endif %}>{{ category.title }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                       
+                        <div class="mb-4">
+
+                            <label for="packages" class="form-label">Packages</label>
+                            
+                            <div class="dropdown">
+                                <button class="btn btn-outline-primary dropdown-toggle w-100" type="button" id="locationDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Select Packages
+                                </button>
+                                <ul class="dropdown-menu w-100" aria-labelledby="locationDropdown" id="packageDropdownList">
+                                    <!-- Packages will be dynamically added here --> 
+                                </ul>
+                            </div>
+
+
+                        </div>
+                        <!-- Banner Image Upload Section -->
+                        <div class="mb-4">
+                            <label for="image" class="form-label mb-4">Upload Banner Images:</label>
+                            <input
+                                    type="file"
+                                    class="form-control"
+                                    id="image"
+                                    name="image"
+                                    accept="image/*"
+                            />
+                            <img id="homeSectionImage" style="display: flex; gap: 10px; flex-wrap: wrap;" class="image-preview" src="" alt="Preview" hidden/>
+                       
+                            <div id="existingImageContainer" style="position: relative;">
+                                {% if home_section.image %}
+                                    <img
+                                        src="{{ home_section.image.url }}"
+                                        alt="Existing Image"
+                                        id="existingImage"
+                                        style="width: 100px; height: 100px; object-fit: cover; border: 1px solid #ddd; border-radius: 5px;"
+                                    />
+                                {% endif %}
+                            </div>
+                       
+                        </div>
+                        <!-- HomeSection Description Section -->
+                        <div class="mb-4">
+                            <label for="description" class="form-label">HomeSection Description:</label>
+                            <textarea
+                                    class="form-control description-box"
+                                    id="description"
+                                    name="description"
+                                    placeholder="Description"
+                            > {{ home_section.description }} </textarea>
+                        </div>
+                        <!-- Submit Button -->
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary custom-button">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- container-fluid -->
+        </div>
+        <!-- End Page-content -->
+
+        {% block footer %}
+            {% include 'partials/footer.html' %}
+        {% endblock footer %}
+    </div>
+    <!-- end main content-->
+{% endblock content %}
+
+
+
+
+
+{% block extra_js %}
+
+<script>
+    const selectedPackages = {{ selected_packages|safe }};
+</script>
+
+
+
+<script>
+
+
+    document.addEventListener("DOMContentLoaded", function () {
+        // Get the categories and other inputs if needed
+        const packageDropdown = document.getElementById("packageDropdownList");
+    
+        if (!packageDropdown) {
+            console.error("packageDropdown element not found!");
+            return;
+        }
+    
+        // Fetch preselected values (example, you might need to adjust this to your actual logic)
+        const selectedPackages = {{ selected_packages }}
+    
+        console.log("Selected Packages: ", selectedPackages);
+    
+        // Event listener for category change
+        document.getElementById("categories").addEventListener("change", function () {
+            var categoryId = this.value;
+            var locationIds = Array.from(document.querySelectorAll('.location-checkbox:checked'))
+                .map(checkbox => checkbox.value);
+            
+            fetchPackages(categoryId, locationIds);
+        });
+    
+        // Function to fetch packages based on category and location
+        function fetchPackages(categoryId, locationIds) {
+            if (categoryId) {
+                // Make an AJAX request to fetch packages based on selected category and location(s)
+                fetch(`/api/packages/get-package/?location_id=${locationIds.join(',')}&category_id=${categoryId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Clear the existing dropdown items
+                        packageDropdown.innerHTML = '';
+    
+                        // Add the new packages to the dropdown
+                        data.forEach(function (packageDetail) {
+                            const listItem = document.createElement("li");
+                            listItem.classList.add("dropdown-item");
+    
+                            const label = document.createElement("label");
+    
+                            const checkbox = document.createElement("input");
+                            checkbox.type = "checkbox";
+                            checkbox.classList.add("form-check-input", "location-checkbox");
+                            checkbox.value = packageDetail.id;
+                            checkbox.name = "packages";  // You can change the name as per your form needs
+                            checkbox.dataset.title = packageDetail.title;
+    
+                            // Check if the package is already selected
+                            if (selectedPackages.includes(packageDetail.id)) {
+                                checkbox.checked = true;
+                            }
+    
+                            label.appendChild(checkbox);
+                            label.appendChild(document.createTextNode(packageDetail.title));  // Add the package title text
+    
+                            listItem.appendChild(label);  // Append the list item to the dropdown
+                            packageDropdown.appendChild(listItem);  // Add to dropdown menu
+                        });
+                    })
+                    .catch(error => {
+                        console.error("Error fetching packages:", error);
+                    });
+            } else {
+                // If no category selected, clear the packages dropdown
+                packageDropdown.innerHTML = '';  // Clear dropdown
+            }
+        }
+    
+        // If there's a preselected category, trigger the fetch
+        var categoryId = document.getElementById("categories").value;
+        var locationIds = Array.from(document.querySelectorAll('.location-checkbox:checked'))
+            .map(checkbox => checkbox.value);
+    
+        if (categoryId) {
+            fetchPackages(categoryId, locationIds);
+        }
+    });
+    
+
+
+    document.getElementById("updateHomeSectionForm").addEventListener("submit", function(event) {
+        event.preventDefault();  // Prevent the default form submission
+        
+        const formData = new FormData(this);  // Prepare form data including file data
+     // Check if a file is selected
+
+     const imageInput = document.getElementById('image');  // Get the image input field
+
+     
+     if (imageInput.files.length === 0) {
+        // If no file is selected, delete the 'image' field from FormData
+        formData.delete('image');
+    }
+        // Log each formData entry
+        for (let [key, value] of formData.entries()) {
+            console.log(key, value); // Logs key-value pairs of form data
+        }
+    // Add CSRF token to the form data
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    // Make AJAX call to submit form data
+    $.ajax({
+        type: "PUT",
+        url: "{% url 'updateHomeSectionDetail' home_section.id %}",
+        data: formData,
+        processData: false,  // Don't process data (important for file uploads)
+        contentType: false, 
+        credentials: 'same-origin',
+        headers: {
+            'X-CSRFToken': csrfToken  // Send CSRF token in the request header
+        }, // Don't set content-type (important for file uploads)
+        success: function (response) {
+            console.log("Outward confirmed successfully:", response);
+            window.location.href = "{% url 'getHomeSectionList' %}";
+        },
+        error: function (xhr, status, error) {
+            console.log("Error confirming outward:", error);
+            alert("Error: Unable to confirm outward.");
+        }
+    });
+});
+
+    
+    
+</script>
+
+
+{% endblock extra_js %}

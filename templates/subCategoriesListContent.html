@@ -1,0 +1,81 @@
+{% load static %}
+{% block content %}
+
+    <!-- ============================================================== -->
+    <!-- Start right Content here -->
+    <!-- ============================================================== -->
+    <div class="main-content">
+        <div class="page-content">
+            <div class="container-fluid">
+                <!-- start page title -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                            <h4 class="mb-sm-0 font-size-18">{{ title }}</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table
+                                                id="datatable"
+                                                class="table table-bordered table-striped"
+                                        >
+                                            <thead>
+                                            <tr>
+                                                <th>Id</th>
+                                                <th>Title</th>
+                                                <th>Image</th>
+                                                <th>Description</th>
+                                                <th>Location</th>
+                                                <th>Category</th>
+                                                <th>Action</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody id="tableBody">
+                                            {% for subCategory in subCategories %}
+                                                <tr>
+                                                    <td>{{ subCategory.id }}</td>
+                                                    <td>{{ subCategory.title }}</td>
+                                                    <td>
+                                                        <img src="{{ subCategory.image }}" alt="SubCategory Image"
+                                                             style="max-width: 100px; max-height: 100px; object-fit: cover;">
+                                                    </td>
+
+                                                    <td>{{ subCategory.description }}</td>
+                                                    <td>{{ subCategory.locationDetails.title }}</td>
+                                                    <td>{{ subCategory.categoryDetails.title }}</td>
+                                                    <td>
+                                                        <!-- remove Button -->
+                                                        <form action="{% url 'deleteSubCategory' subCategory.id %}"
+                                                              method="post" class="reject-form">
+                                                            {% csrf_token %}
+                                                            <button type="submit" class="btn btn-danger w-5">Remove
+                                                            </button>
+                                                        </form>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- container-fluid -->
+        </div>
+        <!-- End Page-content -->
+
+        {% block footer %}
+            {% include 'partials/footer.html' %}
+        {% endblock footer %}
+    </div>
+    <!-- end main content-->
+{% endblock content %}

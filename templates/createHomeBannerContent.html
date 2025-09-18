@@ -1,0 +1,90 @@
+{% load static %}
+{% block content %}
+
+    <!-- ============================================================== -->
+    <!-- Start right Content here -->
+    <!-- ============================================================== -->
+    <div class="main-content">
+        <div class="page-content">
+            <div class="container-fluid">
+                <!-- start page title -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                            <h4 class="mb-sm-0 font-size-18">{{ title }}</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-container">
+                    <form method="POST" action="/api/homePage/homeBanner/create/" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <!-- HomeBanner Title Section -->
+                        <div class="mb-4">
+                            <label for="title" class="form-label">HomeBanner Title:</label>
+                            <input
+                                    type="text"
+                                    class="form-control"
+                                    id="title"
+                                    name="title"
+                                    placeholder="Title"
+                                    required
+                            />
+                        </div>
+                        <!-- Dropdown for Location Selection -->
+                        <div class="mb-4">
+                            <label for="location" class="form-label">Locations</label>
+                            <div class="dropdown">
+                                <button class="btn btn-outline-primary dropdown-toggle w-100" type="button" id="locationDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Select Locations
+                                </button>
+                                <ul class="dropdown-menu w-100" aria-labelledby="locationDropdown">
+                                    {% for location in locations %}
+                                        <li>
+                                            <label class="dropdown-item">
+                                                <input type="checkbox" class="form-check-input location-checkbox" value="{{ location.id }}" data-title="{{ location.title }}" name="location"/>
+                                                {{ location.title }}
+                                            </label>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                        <!-- HomeBanner Image Upload Section -->
+                        <div class="mb-4">
+                            <label for="image" class="form-label mb-4">Upload Images:</label>
+                            <input
+                                    type="file"
+                                    class="form-control"
+                                    id="banner_image"
+                                    name="image"
+                                    accept="image/*"
+                            />
+                            <img id="bannerImage" class="image-preview" src="" alt="Preview" hidden/>
+                        </div>
+                        <!-- HomeBanner Description Section -->
+                        <div class="mb-4">
+                            <label for="description" class="form-label">HomeBanner Description:</label>
+                            <textarea
+                                    class="form-control description-box"
+                                    id="description"
+                                    name="description"
+                                    placeholder="Description"
+                            ></textarea>
+                        </div>
+                        <!-- Submit Button -->
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary custom-button">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- container-fluid -->
+        </div>
+        <!-- End Page-content -->
+
+        {% block footer %}
+            {% include 'partials/footer.html' %}
+        {% endblock footer %}
+    </div>
+    <!-- end main content-->
+{% endblock content %}

@@ -1,0 +1,223 @@
+{% extends "partials/vendorBase.html" %}
+{% load static %}
+
+{% block title %}Vendor Profile{% endblock title %}
+
+{% block extra_css %}
+<link href="{% static 'libs/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.css' %}" rel="stylesheet" type="text/css" />
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
+<style>
+    body {
+      background-color: gainsboro;
+    }
+
+    .header-section {
+      margin-top: 10px;
+      margin-bottom: 20px;
+      color: #291a4a;
+    }
+
+    .stats-card {
+      background: #f0d28c;
+      border: none;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 2px 8px #291a4a;
+      margin-bottom: 20px;
+    }
+
+    .stats-card h5 {
+      color: #555;
+      margin-bottom: 5px;
+    }
+
+    .stats-card .value {
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .rating {
+      color: #f8b400;
+    }
+
+    .review-card {
+      background: #f0d28c;
+      border: none;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 2px 8px #291a4a;
+      margin-bottom: 20px;
+      display: flex;
+      flex-wrap: wrap;
+    }
+
+    .review-card .reviewer-img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      margin-right: 15px;
+      flex-shrink: 0;
+    }
+
+    .review-card .reviewer-name {
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+
+    .review-card .review-date {
+      font-size: 1rem;
+      color: #291a4a;
+    }
+
+    .review-card .review-text {
+      margin: 10px 0;
+      font-size: 0.95rem;
+      color: #555;
+    }
+
+    .review-card .btn {
+      font-size: 0.85rem;
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+      .review-card {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .header-section {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .stats-card .value {
+        font-size: 1.2rem;
+      }
+
+      .stats-card {
+        padding: 15px;
+      }
+
+      .review-card .btn {
+        margin-bottom: 10px;
+      }
+    }
+  </style>
+{% endblock extra_css %}
+
+
+{% block content %}
+<div class="main-content">
+    <div class="page-content">
+        <div class="container-fluid">
+
+            <div class="form-container">
+              <h2 class="form-heading">Create Service</h2>
+              <form action="{% url 'CreateServices' %}" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="productDescFr" class="form-label">Title</label>
+                        <input
+                            type="text"
+                            id="productDescFr"
+                            class="form-control"
+                            placeholder="Enter title"
+                            name="title"
+                        />
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="productCategory" class="form-label">Service Category</label>
+                        <input
+                            type="text"
+                            id="productCategory"
+                            class="form-control"
+                            placeholder="Enter category"
+                            name="category"
+                        />
+                    </div>
+                    <div class="col-md-6">
+                        <label for="productBrand" class="form-label">Location</label>
+                        <input
+                            type="text"
+                            id="productBrand"
+                            class="form-control"
+                            placeholder="Enter location"
+                            name="location"
+                        />
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="mainPrice" class="form-label">Price</label>
+                        <input
+                            type="number"
+                            id="mainPrice"
+                            class="form-control"
+                            placeholder="Enter price"
+                            name="package_location_prices"
+                        />
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="stockAlert" class="form-label">Email</label>
+                        <input
+                            type="email"
+                            id="stockAlert"
+                            class="form-control"
+                            placeholder="Enter email"
+                            name="email"
+                        />
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="percentageDiscount" class="form-label">Contact Number</label>
+                        <input
+                            type="text"
+                            id="percentageDiscount"
+                            class="form-control"
+                            placeholder="Enter contact number"
+                            name="contact_number"
+                        />
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="productDescription" class="form-label">Service Description</label>
+                        <textarea
+                            id="productDescription"
+                            class="form-control"
+                            placeholder="Enter description"
+                            name="description"
+                        ></textarea>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="discountPrice" class="form-label">Image Upload</label>
+                        <input type="file" id="discountPrice" class="form-control" name="image" />
+                    </div>
+                </div>
+
+                <div class="text-left">
+                    <button type="submit" class="btn btn-primary">CREATE</button>
+                </div>
+            </form>
+            </div>
+
+            
+
+
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

@@ -1,0 +1,268 @@
+{% load static %}
+{% block content %}
+
+    <!-- ============================================================== -->
+    <!-- Start right Content here -->
+    <!-- ============================================================== -->
+    <div class="main-content">
+        <div class="page-content">
+            <div class="container-fluid">
+                <!-- start page title -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                            <h4 class="mb-sm-0 font-size-18">{{ title }}</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="container">
+                    <div class="form-container">
+                        <form method="POST" action="/api/categories/create/" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <!-- Category Title Section -->
+                            <div class="mb-4">
+                                <label for="title" class="form-label">Category Title:</label>
+                                <input
+                                        type="text"
+                                        class="form-control"
+                                        id="title"
+                                        name="title"
+                                        placeholder="Title"
+                                        required
+                                />
+                            </div>
+                            <div class="mb-4">
+                                <label for="title" class="form-label">Sub Title Category:</label>
+                                <input
+                                        type="text"
+                                        class="form-control"
+                                        id="sub_title_category"
+                                        name="sub_title_category"
+                                        placeholder="Sub Category Title Max 50 Character"
+                                        required
+                                />
+                            </div>
+                            <!-- Dropdown for Location Selection -->
+                            
+                            <label for="locations" class="form-label">Locations</label>
+                        <div class="dropdown">
+                            <button class="btn btn-outline-primary dropdown-toggle w-100" type="button" id="locationDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                Select Locations
+                            </button>
+                            <ul class="dropdown-menu w-100" aria-labelledby="locationDropdown">
+                                {% for location in locations %}
+                                    <li>
+                                        <label class="dropdown-item">
+                                            <input type="checkbox" class="form-check-input location-checkbox" value="{{ location.id }}" data-title="{{ location.title }}" name="location"/>
+                                            {{ location.title }}
+                                        </label>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                            
+                                    <!-- Category Description Section -->
+                            <div class="mb-4">
+                                <label for="description" class="form-label">Category Description:</label>
+                                <textarea
+                                        class="form-control description-box"
+                                        id="description"
+                                        name="description"
+                                        placeholder="Description"
+                                ></textarea>
+                            </div>
+                            <div class="mb-5">
+                                <label for="banner_images" class="form-label">Banner Image</label>
+                                <!-- Banner Image Input -->
+                                <input 
+                                    type="file" 
+                                    class="form-control" 
+                                    id="banner_images" 
+                                    name="banner_images" 
+                                    multiple
+                                    onchange="displaySelectedImages()"
+                                    accept="image/*"
+                                />
+                                <!-- Error Message -->
+                                <!-- Preview -->
+                                <div class="mt-3" id="banner_imagesPreview" style="display: flex; gap: 10px; flex-wrap: wrap;"></div>
+                            </div>
+
+                            <div class="mb-5">
+                                <label for="iconImage" class="form-label">Icon</label>
+                                <!-- Icon Image Input -->
+                                <input 
+                                    type="file" 
+                                    class="form-control" 
+                                    id="iconImage" 
+                                    name="icon" 
+                                    onchange="displaySelectedImages2()" 
+                                    accept="image/*"
+                                />
+                                
+                                <!-- Preview -->
+                                <div class="mt-3" id="iconImagePreview" style="display: flex; gap: 10px; flex-wrap: wrap;"></div>
+                            </div>
+                            <div class="mb-5">
+                                <label for="iconImage" class="form-label">Sub Category Image</label>
+                                <!-- Icon Image Input -->
+                                <input 
+                                    type="file" 
+                                    class="form-control" 
+                                    id="category_image" 
+                                    name="category_image" 
+                                    onchange="displaySelectedImages3()" 
+                                    accept="image/*"
+                                />
+                                <!-- Preview -->
+                                <div class="mt-3" id="category_imagePreview" style="display: flex; gap: 10px; flex-wrap: wrap;"></div>
+                            </div>
+                                    <!-- Submit Button -->
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-primary custom-button">Submit</button>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+            <!-- container-fluid -->
+    </div>
+        <!-- End Page-content -->
+
+        {% block footer %}
+            {% include 'partials/footer.html' %}
+        {% endblock footer %}
+    </div>
+    <!-- end main content-->
+{% endblock content %}
+
+{% block extra_js %}
+
+
+<script>
+
+function validateAndDisplayImages() {
+    const input = document.getElementById('packageImages');
+    const errorDiv = document.getElementById('imageError');
+    const selectedImagesDiv = document.getElementById('selectedImages');
+    const files = input.files;
+
+    // Clear previous messages and previews
+    errorDiv.style.display = 'none';
+    errorDiv.textContent = '';
+    selectedImagesDiv.innerHTML = '';
+
+    // Validation: Min and Max Limit
+    if (files.length < 1 || files.length > 4) {
+        errorDiv.style.display = 'block';
+        errorDiv.textContent = 'Please select between 1 and 4 images.';
+        input.value = ''; // Clear invalid input
+        return;
+    }
+
+    // Display selected images
+    for (const file of files) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            img.style.width = '100px';
+            img.style.height = '100px';
+            img.style.objectFit = 'cover';
+            selectedImagesDiv.appendChild(img);
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+
+function displaySelectedImages() {
+    const input = document.getElementById("banner_images");
+    const selectedImagesContainer = document.getElementById("banner_imagesPreview");
+    selectedImagesContainer.innerHTML = ""; // Clear previously displayed images
+
+    Array.from(input.files).forEach((file) => {
+      if (file.type.startsWith("image/")) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          const imageDiv = document.createElement("div");
+          imageDiv.style.position = "relative";
+          const img = document.createElement("img");
+          img.src = event.target.result;
+          img.alt = file.name;
+          img.style.width = "100px";
+          img.style.height = "100px";
+          img.style.objectFit = "cover";
+          img.style.border = "1px solid #ddd";
+          img.style.borderRadius = "5px";
+          imageDiv.appendChild(img);
+          selectedImagesContainer.appendChild(imageDiv);
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  }
+
+
+function displaySelectedImages2() {
+    const input = document.getElementById("iconImage");
+    const selectedImagesContainer = document.getElementById("iconImagePreview");
+    selectedImagesContainer.innerHTML = ""; // Clear previously displayed images
+
+    Array.from(input.files).forEach((file) => {
+      if (file.type.startsWith("image/")) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          const imageDiv = document.createElement("div");
+          imageDiv.style.position = "relative";
+          const img = document.createElement("img");
+          img.src = event.target.result;
+          img.alt = file.name;
+          img.style.width = "100px";
+          img.style.height = "100px";
+          img.style.objectFit = "cover";
+          img.style.border = "1px solid #ddd";
+          img.style.borderRadius = "5px";
+          imageDiv.appendChild(img);
+          selectedImagesContainer.appendChild(imageDiv);
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  }
+
+
+function displaySelectedImages3() {
+    const input = document.getElementById("category_image");
+    const selectedImagesContainer = document.getElementById("category_imagePreview");
+    selectedImagesContainer.innerHTML = ""; // Clear previously displayed images
+
+    Array.from(input.files).forEach((file) => {
+      if (file.type.startsWith("image/")) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          const imageDiv = document.createElement("div");
+          imageDiv.style.position = "relative";
+          const img = document.createElement("img");
+          img.src = event.target.result;
+          img.alt = file.name;
+          img.style.width = "100px";
+          img.style.height = "100px";
+          img.style.objectFit = "cover";
+          img.style.border = "1px solid #ddd";
+          img.style.borderRadius = "5px";
+          imageDiv.appendChild(img);
+          selectedImagesContainer.appendChild(imageDiv);
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  }
+
+
+
+</script>
+
+{% endblock extra_js %}

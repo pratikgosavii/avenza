@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Vendor Calendar</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"></script>
+</head>
+<body>
+    <form method="POST" id="availability-form">
+        {% csrf_token %}
+        <div id="calendar"></div>
+        <input type="hidden" name="available_dates" id="available-dates">
+        <input type="submit" value="Save Availability" />
+    </form>
+
+    <script>
+        $(document).ready(function() {
+            var availableDates = {{ available_dates|safe }};
+    
+            $('#calendar').fullCalendar({
+                selectable: true,
+                selectHelper: true,
+                events: availableDates.map(date => ({ start: date })),
+                select: function(start) {
+                    var selectedDate = moment(start).format('YYYY-MM-DD');
+                    var index = availableDates.indexOf(selectedDate);
+    
+                    if (index > -1) {
+                        availableDates.splice(index, 1);
+                        // Remove the date from the calendar view
+                        $('#calendar').fullCalendar('removeEvents', function(event) {
+                            return event.start.format('YYYY-MM-DD') === selectedDate;
+                        });
+                    } else {
+                        availableDates.push(selectedDate);
+                        // Add the new date to the calendar view
+                        $('#calendar').fullCalendar('renderEvent', { start: selectedDate }, true);
+                    }
+                }
+            });
+    
+            function getCookie(name) {
+                var cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    var cookies = document.cookie.split(';');
+                    for (var i = 0; i < cookies.length; i++) {
+                        var cookie = cookies[i].trim();
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+            
+            var csrftoken = getCookie('csrftoken');
+            
+            document.getElementById('availability-form').addEventListener('submit', function(event) {
+                event.preventDefault();
+                
+                var formData = new FormData();
+                availableDates.forEach(function(date) {
+                    formData.append('available_dates', date);
+                });
+            
+                $.ajax({
+                    url: this.action,
+                    method: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    headers: { 'X-CSRFToken': csrftoken },
+                    success: function(response) {
+                        console.log('Dates saved successfully:', response);
+                    },
+                    error: function(error) {
+                        console.log('Error saving dates:', error);
+                    }
+                });
+            });
+
+            
+
+        });
+    </script>
+    
+    
+</body>
+</html>

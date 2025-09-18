@@ -1,0 +1,187 @@
+{% extends "partials/adminBase.html" %}
+{% load static %}
+
+{% block title %}Create Category{% endblock title %}
+
+
+{% block extra_css %}
+    <!-- plugin css -->
+    <link href="{% static 'libs/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.css' %}" rel="stylesheet"
+          type="text/css"/>
+    <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+    />
+    <style>
+        body {
+            background-color: #f0d28c;
+            padding-bottom: 20px;
+        }
+
+        .form-container {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-heading {
+            text-align: left;
+            margin-bottom: 20px;
+            font-weight: bold;
+            font-size: 2rem;
+            color: #291a4a;
+        }
+
+        .description-box {
+            height: 150px;
+            resize: none;
+        }
+
+        .image-preview {
+            max-height: 100px;
+            margin-top: 10px;
+        }
+
+        .btn-primary {
+            background-color: #291a4a;
+            border-color: #291a4a;
+        }
+
+        .custom-button {
+            width: 150px;
+        }
+    </style>
+{% endblock extra_css %}
+
+{% block content %}
+    {% include "updateCategoryContent.html" with title='Create Category' pageview='Create Category' %}
+{% endblock content %}
+
+{% block extra_js %}
+    <!-- apexcharts -->
+    <script src="{% static 'libs/apexcharts/dist/apexcharts.min.js' %}"></script>
+    <script>
+        // Image preview logic
+        document.getElementById("banner_images").addEventListener("change", function () {
+            const file = this.files[0];
+            const preview = document.getElementById("banner_imagesPreview");
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (event) {
+                    preview.src = event.target.result;
+                    preview.hidden = false;
+                };
+                reader.readAsDataURL(file);
+            } else {
+                preview.src = "";
+                preview.hidden = true;
+            }
+        });
+        document.getElementById("iconImage").addEventListener("change", function () {
+            const file = this.files[0];
+            const preview = document.getElementById("iconImagePreview");
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (event) {
+                    preview.src = event.target.result;
+                    preview.hidden = false;
+                };
+                reader.readAsDataURL(file);
+            } else {
+                preview.src = "";
+                preview.hidden = true;
+            }
+        });
+        {% comment %} document.getElementById("banner_images").addEventListener("change", function () {
+            const file = this.files[0];
+            const preview = document.getElementById("banner_imagesPreview");
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (event) {
+                    preview.src = event.target.result;
+                    preview.hidden = false;
+                };
+                reader.readAsDataURL(file);
+            } else {
+                preview.src = "";
+                preview.hidden = true;
+            }
+        }); {% endcomment %}
+
+
+
+        
+        document.getElementById("categiry_form").addEventListener("submit", function(event) {
+            event.preventDefault();  // Prevent the default form submission
+        
+            const formData = new FormData(this);  // Prepare form data including file data
+        
+            const imageInput = document.getElementById('banner_images');
+            if (imageInput.files.length === 0) {
+                formData.delete('banner_images');
+            }
+        
+            const imageInput1 = document.getElementById('iconImage');
+            if (imageInput1.files.length === 0) {
+                formData.delete('iconImage');
+            }
+        
+            const imageInput2 = document.getElementById('category_image');
+            if (imageInput2.files.length === 0) {
+                formData.delete('category_image');
+            }
+        
+            // Get CSRF token from the cookie
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        
+            // Add CSRF token to the form data as a header
+            $.ajax({
+                type: "PUT",
+                url: "{% url 'updateCategoryDetail' category_instance.id %}",
+                data: formData,
+                credentials: 'same-origin',
+                processData: false,  // Don't process data (important for file uploads)
+                contentType: false,  // Don't set content-type (important for file uploads)
+                headers: {
+                    'X-CSRFToken': csrfToken  // Send CSRF token in the request header
+                },
+                success: function(response) {
+                    console.log("Outward confirmed successfully:", response);
+                    window.location.href = "{% url 'getHomeSectionList' %}";
+                },
+                error: function(xhr, status, error) {
+                    console.log("Error confirming outward:", error);
+                    alert("Error: Unable to confirm outward.");
+                }
+            });
+        });
+
+
+
+
+    </script>
+    <script>
+        // Auto-hide toast after 5 seconds
+        setTimeout(() => {
+            const toastElement = document.getElementById("toast");
+            if (toastElement) {
+                toastElement.classList.remove("show"); // Hide toast
+                setTimeout(() => {
+                    toastElement.remove(); // Remove from DOM
+                }, 500); // Wait for fade-out animation
+            }
+        }, 5000);
+    </script>
+
+    <!-- Plugins js-->
+    <script src="{% static 'libs/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.min.js' %}"></script>
+    <script src="{% static 'libs/admin-resources/jquery.vectormap/maps/jquery-jvectormap-world-mill-en.js' %}"></script>
+    <script src="{% static 'js/pages/allchart.js' %}"></script>
+    <!-- dashboard init -->
+    <script src="{% static 'js/pages/dashboard.init.js' %}"></script>
+
+{% endblock extra_js %}

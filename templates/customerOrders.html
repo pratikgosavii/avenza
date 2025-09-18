@@ -1,0 +1,79 @@
+{% load static %}
+{% block content %}
+<!-- ============================================================== -->
+<!-- Start right Content here -->
+<!-- ============================================================== -->
+<div class="container my-5">
+    <!-- Header -->
+    <h3 class="mb-4">Customer Details</h3>
+
+    <!-- Customer Info Section -->
+    <div class="customer-info">
+      <div class="row">
+        <!-- Left Section -->
+        <div class="col-md-6">
+          <h5>Customer Name</h5>
+          <p>{{ customer.username }}</p>
+
+          <h5>Address:</h5>
+          <p>{{ customer.address1 }}, {{ customer.address2 }}</p>
+
+          <h5>Mobile Number</h5>
+          <p>{{ customer.customerPhoneNumber }}</p>
+        </div>
+
+        <!-- Right Section -->
+        <div class="col-md-6">
+          <h5 class="text-end">Location</h5>
+          <p class="text-end">{{ customer.locationDetails.title }}</p>
+
+          <h5 class="text-end">Details</h5>
+          <p class="text-end">All Customer orders</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Table Section -->
+    <div class="table-responsive p-3">
+      <table class="table align-middle table-striped">
+        <thead>
+          <tr>
+            <th scope="col">Order</th>
+            <th scope="col">Date</th>
+            <th scope="col">Category</th>
+            <th scope="col">Total</th>
+            <th scope="col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for order in customer.orders.all %}
+          <tr>
+            <td>
+              <a href="{% url 'order_detail' order.id %}" class="text-decoration-none">#{{ order.id }}</a>
+            </td>
+            <td>{{ order.order_date }}</td>
+            <td>{{ order.category }}</td>
+            <td>Rs{{ order.total_amount }}</td>
+            <td>
+              <a href="{% url 'order_view' order.id %}" class="view-btn">
+                <i class="bi bi-eye"></i> View
+              </a>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="5" class="text-center">No orders available</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+    <!-- End Page-content -->
+
+    {% block footer %}
+        {% include 'partials/footer.html' %}
+    {% endblock footer %}
+</div>
+<!-- end main content-->
+{% endblock content %}

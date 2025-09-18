@@ -1,0 +1,152 @@
+{% load static %}
+{% block content %}
+<div class="main-content">
+    <div class="page-content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                        <h4 class="mb-sm-0 font-size-18">Packages</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table id="datatable" class="table table-bordered table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Title</th>
+                                                <th>Image</th>
+                                                <th>Description</th>
+                                                <th>Categories</th>
+                                                <th>Package Inclusion</th>
+                                                <th> Need To Know</th>
+                                                <th>Location</th>
+                                                <th>Price</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tableBody">
+                                            {% for package in packages %}
+                                            <tr>
+                                                <td>{{ forloop.counter}}</td>
+                                                <td>{{ package.title }}</td>
+                                                <td>
+                                                    {% if package.image %}
+                                                        <img src="{{ package.image }}" alt="Package Image" style="max-width: 100px; max-height: 100px; object-fit: cover;">
+                                                    {% else %}
+                                                        <span>No Image</span>
+                                                    {% endif %}
+                                                </td>
+                                                <td>{{ package.description }}</td>
+                                                <td>{% for category in package.categories %}<span>{{ category }}</span><br>{% endfor %}</td>
+                                                <td>{% for i in package.package_inclusion %}<span>{{ i }}</span><br>{% endfor %}</td>
+                                                <td>{% for i in package.need_to_know %}<span>{{ i }}</span><br>{% endfor %}</td>
+                                                <td>{{ package.location }}</td>
+                                                <td>{{ package.price }}</td>  
+                                                <td>
+                                                    <!-- Edit Button -->
+                                                  <a href="{% url 'updatePackage' package.id %}">  <button type="button" 
+                                                            class="btn btn-primary edit-package" 
+                                                           >
+                                                        Edit
+                                                    </button> </a>
+
+                                                    <!-- Delete Form -->
+                                                    <form action="{% url 'deletePackage' package.subid %}" method="post" class="reject-form d-inline-block">
+                                                        {% csrf_token %}
+                                                        <button type="submit" class="btn btn-danger w-5">Remove</button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+
+
+                                    <!-- JavaScript to handle edit requests -->
+                                    <script src="{% static 'js/jquery.min.js' %}"></script> <!-- Include jQuery -->
+                                    <!-- Add Bootstrap JS if needed -->
+
+                                    <script type="text/javascript">
+                                        document.addEventListener('DOMContentLoaded', function() {
+                                            // Populate modal with existing package data
+                                            document.querySelectorAll('.edit-package').forEach(button => {
+                                                button.addEventListener('click', function() {
+                                                    const packageId = this.dataset.packageId;
+                                                    const title = this.dataset.title;
+                                                    const description = this.dataset.description;
+                                                    const price = this.dataset.price;
+                                                    const categories = this.dataset.categories; // Comma-separated
+                                                    const location = this.dataset.location;
+
+                                                    // Populate fields in the modal
+                                                    document.getElementById('package_id').value = packageId;
+                                                    document.getElementById('title').value = title;
+                                                    document.getElementById('description').value = description;
+                                                    document.getElementById('price').value = price;
+                                                    document.getElementById('categories').value = categories;
+                                                    document.getElementById('location').value = location;
+
+                                                    // Show the modal
+                                                    $('#editPackageModal').modal('show');
+                                                });
+                                            });
+
+                                            // Save changes to server
+                                            document.getElementById('saveChanges').addEventListener('click', async function() {
+                                                const packageId = document.getElementById('package_id').value;
+                                                const title = document.getElementById('title').value;
+                                                const description = document.getElementById('description').value;
+                                                const price = document.getElementById('price').value;
+                                                const categories = document.getElementById('categories').value.split(','); // Convert to array
+                                                const location = document.getElementById('location').value;
+                                                const image = document.getElementById('image').files[0]; // Get uploaded file
+
+                                                // Use FormData to handle file uploads
+                                                const formData = new FormData();
+                                                formData.append('title', title);
+                                                formData.append('description', description);
+                                                formData.append('price', price);
+                                                formData.append('categories', JSON.stringify(categories));
+                                                formData.append('location', location);
+                                                if (image) {
+                                                    formData.append('image', image);
+                                                }
+
+                                                try {
+                                                    const response = await fetch(`/update/${packageId}/`, {
+                                                        method: 'PUT',
+                                                        headers: {
+                                                            'X-CSRFToken': '{{ csrf_token }}'
+                                                        },
+                                                        body: formData
+                                                    });
+
+                                                    if (!response.ok) {
+                                                        throw new Error(`HTTP error! Status: ${response.status}`);
+                                                    }
+
+                                                    alert('Package updated successfully!');
+                                                    location.reload(); // Refresh the page
+                                                } catch (error) {
+                                                    alert('Error updating package: ' + error.message);
+                                                }
+                                            });
+                                        });
+                                    </script>
+                                </div> <!-- End of table-responsive -->
+                            </div> <!-- End of card-body -->
+                        </div> <!-- End of card -->
+                    </div> <!-- End of col-12 -->
+                </div> <!-- End of row -->
+            </div> <!-- End of container -->
+        </div> <!-- End of page-content -->
+    </div> <!-- End of main-content -->
+</div>
+{% endblock content %}

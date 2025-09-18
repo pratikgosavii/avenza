@@ -1,0 +1,201 @@
+{% extends "partials/adminBase.html" %}
+{% load static %}
+
+{% block title %}Location Details{% endblock title %}
+
+{% block extra_css %}
+<style>
+  body {
+    background-color: #f8f9fa;
+  }
+
+  .details-container {
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .icon-image {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+  }
+
+  .table-container {
+    margin-top: 20px;
+  }
+
+  .table-section {
+    padding: 15px;
+    background-color: #fff;
+    border-radius: 12px;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+  }
+
+  .info-box {
+    border: 2px solid #291a4a;
+    border-radius: 10px;
+    padding: 10px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    background-color: #f8f9fa;
+    color: #291a4a;
+    text-align: center;
+  }
+
+  .view-btn {
+    background-color: #291a4a;
+    color: #fff;
+  }
+
+  .view-btn:hover {
+    background-color: #f0d28c;
+    color: #fff;
+  }
+
+  .section-title {
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+
+  .list-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  .list-item span {
+    font-size: 1.1rem;
+  }
+
+  .my-hr {
+    margin: 10px 0;
+  }
+
+  .fw-bold {
+    font-weight: bold;
+    color: #291a4a;
+    font-size: xx-large;
+  }
+</style>
+{% endblock extra_css %}
+
+{% block content %}
+<div class="main-content">
+  <div class="page-content">
+      <div class="container-fluid">
+        <div class="container mt-4">
+          <h2 class="fw-bold mb-4">Location Details</h2>
+
+  <!-- Details Container -->
+  <div class="details-container row align-items-center mb-4">
+    <!-- Left: Location Name -->
+    <div class="col-md-6">
+      <h4>Location Name: <span class="fw-bold">{{ location.title }}</span></h4>
+    </div>
+
+    <!-- Right: Icon -->
+    <div class="col-md-6 text-end">
+      {% if location.icon %}
+        <img src="{{ location.icon.url }}" alt="Location Icon" class="icon-image" />
+      {% else %}
+        <span class="text-muted">No Icon Available</span>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Table Section -->
+  <div class="table-container">
+    <div class="row">
+      <!-- Orders Column -->
+      <div class="col-md-4 table-section">
+        <div class="text-center section-title">Orders List</div>
+        <div class="info-box mb-3">Total Orders: {{ orders.count }}</div>
+        <ul class="list-unstyled">
+          {% if orders %}
+            {% for order in orders %}
+            <li class="list-item">
+              <span>Order ID: #{{ order.id }} - ₹{{ order.total_amount }}</span>
+              <button class="btn btn-sm view-btn ms-3" onclick="viewOrder({{ order.id }})">
+                <i class="bi bi-eye"></i> View
+              </button>
+            </li>
+            <hr class="my-hr" />
+            {% endfor %}
+          {% else %}
+            <div class="no-data">No Orders Available</div>
+          {% endif %}
+        </ul>
+      </div>
+
+      <!-- Customer Column -->
+      <div class="col-md-4 table-section">
+        <div class="section-title text-center">Customer List</div>
+        <div class="info-box mb-3">Total Customers: {{ customers.count }}</div>
+        <ul class="list-unstyled">
+          {% if customers %}
+            {% for customer in customers %}
+            <li class="list-item">
+              <span>{{ customer.name }}</span>
+              <button class="btn btn-sm view-btn ms-3" onclick="viewCustomer({{ customer.id }})">
+                <i class="bi bi-eye"></i> View
+              </button>
+            </li>
+            <hr class="my-hr" />
+            {% endfor %}
+          {% else %}
+            <div class="no-data">No Customers Available</div>
+          {% endif %}
+        </ul>
+      </div>
+
+      <!-- Vendor Column -->
+      <div class="col-md-4 table-section">
+        <div class="section-title text-center">Vendors List</div>
+        <div class="info-box mb-3">Total Vendors: {{ vendors.count }}</div>
+        <ul class="list-unstyled">
+          {% if vendors %}
+            {% for vendor in vendors %}
+            <li class="list-item">
+              <span>{{ vendor.name }}</span>
+              <button class="btn btn-sm view-btn ms-3" onclick="viewVendor({{ vendor.id }})">
+                <i class="bi bi-eye"></i> View
+              </button>
+            </li>
+            <hr class="my-hr" />
+            {% endfor %}
+          {% else %}
+            <div class="no-data">No Vendors Available</div>
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+</div>
+
+
+{% endblock content %}
+
+{% block extra_js %}
+<script>
+  function viewOrder(orderId) {
+    window.location.href = `/api/orders/details/${orderId}/`;
+  }
+
+  function viewCustomer(customerId) {
+    window.location.href = `/api/customers/details/${customerId}/`;
+  }
+
+  function viewVendor(vendorId) {
+    window.location.href = `/api/vendors/details/${vendorId}/`;
+  }
+</script>
+{% endblock extra_js %}

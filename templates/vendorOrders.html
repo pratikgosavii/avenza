@@ -1,0 +1,283 @@
+{% extends "partials/vendorBase.html" %}
+{% load static %}
+
+{% block title %}Vendor Profile{% endblock title %}
+
+{% block extra_css %}
+<link href="{% static 'libs/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.css' %}" rel="stylesheet" type="text/css" />
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
+<style>
+  .order-status {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .order-status div {
+    text-align: center;
+  }
+
+  .order-info-btn {
+    border: 1px solid #6c63ff;
+    background: white;
+    color: #6c63ff;
+    font-weight: bold;
+    padding: 5px 10px;
+    border-radius: 5px;
+  }
+
+  .order-info-btn:hover {
+    background-color: #6c63ff;
+    color: white;
+  }
+
+  .rating i {
+    color: #ffc107;
+  }
+
+  .order-container {
+    margin-bottom: 20px;
+  }
+
+  .order-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+</style>
+{% endblock extra_css %}
+
+{% block content %}
+<div class="main-content">
+    <div class="page-content">
+        <div class="container-fluid">
+          <div class="container my-5">
+            <!-- User Info -->
+            <div class="text-center mb-4">
+              <h5>Hello, {{ vendor_name }}</h5> <!-- Show the vendor's username -->
+              <p>Logged in as: {{ vendor.user.email }}</p> <!-- Show the vendor's email -->
+            </div>
+
+            <!-- Vendor Information Table -->
+            <!-- <div class="table-responsive mb-4">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Vendor Name</th>
+                    <th>Phone Number</th>
+                    <th>Location</th>
+                    <th>Category</th>
+                    <th>Portfolio</th>
+                    <th>Availability</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>{{ vendor.vendorname }}</td>
+                    <td>{{ vendor.vendorPhoneNumber }}</td>
+                    <td>{{ vendor.location }}</td>
+                    <td>
+                      {% for category in vendor.category.all %}
+                        {{ category.name }}{% if not forloop.last %}, {% endif %}
+                      {% endfor %}
+                    </td>
+                    <td><a href="{{ vendor.portfolio_link }}" target="_blank">{{ vendor.portfolio_link }}</a></td>
+                    <td>{% if vendor.is_available %}Available{% else %}Not Available{% endif %}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div> -->
+
+            <!-- Order Summary and Recent Orders -->
+            <div class="row text-center mb-4">
+              <div class="col-md-4">
+                <div class="p-3 border rounded">
+                  <i class="bi bi-box fs-1"></i>
+                  <p class="mb-0">Orders Placed</p>
+                  <h4>{{ total_orders }}</h4> <!-- Display total vendor orders -->
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="p-3 border rounded">
+                  <i class="bi bi-cart fs-1"></i>
+                  <p class="mb-0">Accepted Total Orders</p>
+                  <h4>{{ accepted_total_orders }}</h4>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="p-3 border rounded">
+                  <i class="bi bi-heart fs-1"></i>
+                  <p class="mb-0">Rejected Total Orders</p>
+                  <h4>{{ rejected_total_orders }}</h4>
+                </div>
+              </div>
+            </div>
+            
+
+            <form>
+
+              {% csrf_token %}
+
+            </form>
+
+
+            <h5 class="mb-3">MY RECENT ORDERS</h5>
+
+            {% for order in orders %}
+              <!-- Order Details -->
+
+              {% if order.status == "rejected" %}
+              <div class="order-container border rounded p-3" style="background: #ffd6d6;">
+                {% elif order.status == "completed" %}
+                <div class="order-container border rounded p-3"  style="background: #c2dbff;">
+                  {% else %}
+                <div class="order-container border rounded p-3"  style="background: #d8ffd8;">
+                {% endif %}
+                <div class="order-header mb-3">
+                  <div>
+                    <strong>ORDER #{{ order.id }}</strong>
+                    <p class="mb-0">Products: #{{ order.packageId }}</p>
+                    <p class="mb-0 text-muted small">{{ order.date }} | {{ order.created_at|date:"h:i A" }}</p>
+                    <p class="rating">
+                      Rating:
+                      <i class="bi bi-star-fill"></i>
+                      <i class="bi bi-star-fill"></i>
+                      <i class="bi bi-star-fill"></i>
+                      <i class="bi bi-star"></i>
+                    </p>
+                  </div>
+                  <div>
+                    <span class="badge bg-primary">{{ order.payment_mode }}</span>
+                    <span>Status: {{ order.status }}</span>
+                  </div>
+                  <button class="order-info-btn" onclick="showOrderInfo({{ order.id }})">ORDER INFO</button>
+                  <!-- Buttons to change order status -->
+                  
+                  <div>
+
+                    <button class="btn btn-primary" onclick="updateOrderStatus({{ order.id }}, 'accepted')">Accept</button>
+                    <button class="btn btn-danger" onclick="updateOrderStatus({{ order.id }}, 'rejected')">Reject</button>
+                    <a href="{% url 'VendorOrderCompleted' order.id %}"> <button class="btn btn-success">Marked Completed</button> </a>
+
+                  </div>
+                  
+                </div>
+
+
+                <div class="order-status">
+                  <div>
+                    <i class="bi bi-gift fs-3"></i>
+                    <p class="mb-0">Placed</p>
+                  </div>
+                  <div>
+                    <i class="bi bi-check-circle fs-3"></i>
+                    <p class="mb-0">Accepted</p>
+                  </div>
+                  <div>
+                    <i class="bi bi-box fs-3"></i>
+                    <p class="mb-0">Packed</p>
+                  </div>
+                  <div>
+                    <i class="bi bi-truck fs-3"></i>
+                    <p class="mb-0">Shipped</p>
+                  </div>
+                  <div>
+                    <i class="bi bi-envelope-check fs-3"></i>
+                    <p class="mb-0">Delivered</p>
+                  </div>
+                </div>
+              </div>
+            {% empty %}
+              <p>No orders found for this vendor.</p>
+            {% endfor %}
+          </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Order Info -->
+<div class="modal fade" id="orderInfoModal" tabindex="-1" aria-labelledby="orderInfoModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="orderInfoModalLabel">Order Information</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Field</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody id="orderInfoBody">
+            <!-- Dynamic order info will be inserted here -->
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  // Function to show order details in a modal
+  function showOrderInfo(orderId) {
+    // You can replace this with an AJAX request to fetch the order details dynamically.
+    var orderDetails = {
+      "Order ID": orderId,
+      "Shipping Address": "123 Main St, New York",
+      "Contact No": "1234567890",
+      "Total Amount": "$100",
+      "Status": "Shipped",
+      "Payment Mode": "Credit Card",
+      "Products": "Product 1, Product 2"
+    };
+
+    // Clear the previous table rows
+    var orderInfoBody = document.getElementById('orderInfoBody');
+    orderInfoBody.innerHTML = "";
+
+    // Add the new order details to the table dynamically
+    for (var key in orderDetails) {
+      if (orderDetails.hasOwnProperty(key)) {
+        var row = document.createElement('tr');
+        row.innerHTML = "<td>" + key + "</td><td>" + orderDetails[key] + "</td>";
+        orderInfoBody.appendChild(row);
+      }
+    }
+
+    // Show the modal
+    var myModal = new bootstrap.Modal(document.getElementById('orderInfoModal'));
+    myModal.show();
+  }
+
+  // Function to update order status
+  function updateOrderStatus(orderId, status) {
+    $.ajax({
+      url: "{% url 'VendorOders' %}",
+      method: "POST",
+      data: {
+        order_id: orderId,
+        status: status,
+        csrfmiddlewaretoken: '{{ csrf_token }}', // CSRF token
+      },
+      success: function(response) {
+        alert(response.message);
+        location.reload();  // Reload page to show updated status
+      },
+      error: function(response) {
+        alert("Error updating order status.");
+      }
+    });
+  }
+</script>
+{% endblock extra_js %}
