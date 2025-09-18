@@ -93,7 +93,7 @@ MIDDLEWARE.insert(0, 'corsheaders.middleware.CorsMiddleware')
 #     "http://127.0.0.1:5173",
 #     "http://82c2-39-35-141-7.ngrok-free.app",  # Add ngrok URL if used
 # ]
-CORS_ALLOW_ALL_ORIGINS = True  # remove for production
+
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000", 
