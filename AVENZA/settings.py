@@ -100,6 +100,8 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:8081", # React frontend
     "http://localhost:5173",
     "https://avenzasurprises.com",
+    "https://avenzasurprises.com",
+    "https://www.avenzasurprises.com", 
 ]
 
 
