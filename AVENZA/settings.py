@@ -95,6 +95,14 @@ MIDDLEWARE.insert(0, 'corsheaders.middleware.CorsMiddleware')
 # ]
 CORS_ALLOW_ALL_ORIGINS = True  # remove for production
 
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000", 
+    "http://localhost:8081", # React frontend
+    "http://localhost:5173",
+    "https://avenzasurprises.com",
+]
+
+
 ROOT_URLCONF = 'AVENZA.urls'
 
 TEMPLATES = [
